@@ -1,0 +1,29 @@
+{
+	"name": "@awspilot/cf-mock",
+	"version": "0.0.1",
+	"description": "",
+	"main": "src/index.js",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"async": "*",
+		"aws-sdk": "*",
+		"@awspilot/dynamodb": "*"
+	},
+	"devDependencies": {
+	},
+	"author": {
+		"name": "Adrian Praja",
+		"email": "adrian@databank.io",
+		"url": "https://awspilot.com"
+	},
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/awspilot/cf-mock"
+	}
+}
