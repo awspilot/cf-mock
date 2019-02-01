@@ -1,7 +1,7 @@
 var http = require('http')
 var parse = require('querystring').parse
 
-var async=require('async')
+async=require('async')
 var AWS = require('aws-sdk')
 
 
