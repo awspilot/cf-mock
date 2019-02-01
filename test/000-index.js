@@ -1,5 +1,9 @@
 
 
 require("../src/index")
-console.log("done..")
-process.exit()
+console.log("init test")
+
+setTimeout(function() {
+	process.exit()
+	console.log("done..")
+})
