@@ -10,6 +10,7 @@
 		"test": "mocha --timeout 100000 -S -R spec --exit"
 	},
 	"dependencies": {
+		"js-yaml": "*",
 		"async": "*",
 		"aws-sdk": "*",
 		"@awspilot/dynamodb": "*"
