@@ -73,7 +73,58 @@ async.waterfall([
 	},
 
 
+	// create table stack_parameters if needed
+	function( cb ){
+		DynamoDB.client.describeTable({TableName: 'cloudformation_stack_parameters'}, function(err, data) {
+			if (!err) {
+				console.log("table cloudformation_stack_parameters exists")
+				return cb()
+			}
 
+
+			if ( err.code === 'ResourceNotFoundException') {
+				// create the table
+				DynamoDB.client.createTable({
+					TableName: "cloudformation_stack_parameters",
+					AttributeDefinitions: [
+						{
+							AttributeName: "stack_id",
+							AttributeType: "S"
+						},
+						{
+							AttributeName: "key",
+							AttributeType: "S"
+						},
+					],
+					KeySchema: [
+						{
+							AttributeName: "stack_id",
+							KeyType: "HASH"
+						},
+						{
+							AttributeName: "key",
+							KeyType: "RANGE"
+						}
+					],
+					ProvisionedThroughput: {
+						ReadCapacityUnits: 5,
+						WriteCapacityUnits: 5
+					},
+				}, function(err,data) {
+					if (err) {
+						return cb(err)
+					}
+
+					console.log("table cloudformation_stack_parameters created")
+					cb()
+				})
+				return
+			} else {
+				throw err
+			}
+
+		})
+	},
 
 
 
