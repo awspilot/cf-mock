@@ -10,56 +10,65 @@ DynamoDB = new DynamodbFactory(
 	new AWS.DynamoDB({
 		endpoint: process.env.DYNAMODB_ENDPOINT,
 		accessKeyId: "myKeyId",
-		secretAccessKey: "secret",
+		secretAccessKey: "secretKey",
 		region: "us-east-1"
 	})
 )
+
+var cf=require('./cf')
 
 async.waterfall([
 
 	// create table stacks if needed
 	function( cb ){
 		DynamoDB.client.describeTable({TableName: 'cloudformation_stacks'}, function(err, data) {
-			if (err.code !== 'ResourceNotFoundException') {
+			if (!err) {
 				console.log("table cloudformation_stacks exists")
 				return cb()
 			}
 
-			// create the table
-			DynamoDB.client.createTable({
-				TableName: "cloudformation_stacks",
-				AttributeDefinitions: [
-					{
-						AttributeName: "account_id",
-						AttributeType: "S"
-					},
-					{
-						AttributeName: "stack_id",
-						AttributeType: "S"
-					},
-				],
-				KeySchema: [
-					{
-						AttributeName: "account_id",
-						KeyType: "HASH"
-					},
-					{
-						AttributeName: "stack_id",
-						KeyType: "RANGE"
-					}
-				],
-				ProvisionedThroughput: {
-					ReadCapacityUnits: 5,
-					WriteCapacityUnits: 5
-				},
-			}, function(err,data) {
-				if (err) {
-					return cb(err)
-				}
 
-				console.log("table cloudformation_stacks created")
-				cb()
-			})
+			if ( err.code === 'ResourceNotFoundException') {
+				// create the table
+				DynamoDB.client.createTable({
+					TableName: "cloudformation_stacks",
+					AttributeDefinitions: [
+						{
+							AttributeName: "account_id",
+							AttributeType: "S"
+						},
+						{
+							AttributeName: "stack_id",
+							AttributeType: "S"
+						},
+					],
+					KeySchema: [
+						{
+							AttributeName: "account_id",
+							KeyType: "HASH"
+						},
+						{
+							AttributeName: "stack_id",
+							KeyType: "RANGE"
+						}
+					],
+					ProvisionedThroughput: {
+						ReadCapacityUnits: 5,
+						WriteCapacityUnits: 5
+					},
+				}, function(err,data) {
+					if (err) {
+						return cb(err)
+					}
+
+					console.log("table cloudformation_stacks created")
+					cb()
+				})
+				return
+			} else {
+				throw err
+			}
+
 		})
 	},
 
@@ -81,14 +90,12 @@ async.waterfall([
 			});
 			request.on('end', function() {
 				var _POST = parse(body)
-				console.log("got body=",_POST);
 
-				//cf[_POST.Action](_POST,function() {
-
-				//})
+				cf[_POST.Action](_POST,function(err,data) {
+					response.end('')
+				})
 			});
 
-			response.end('')
 		}
 		const server = http.createServer(requestHandler)
 		server.listen(10001,function(err) {
