@@ -7,7 +7,7 @@
 		"test": "test"
 	},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "mocha --timeout 100000 -S -R spec --exit"
 	},
 	"dependencies": {
 		"async": "*",
@@ -15,6 +15,7 @@
 		"@awspilot/dynamodb": "*"
 	},
 	"devDependencies": {
+		"mocha": "5.2.0"
 	},
 	"author": {
 		"name": "Adrian Praja",
