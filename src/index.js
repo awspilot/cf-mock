@@ -8,10 +8,10 @@ var AWS = require('aws-sdk')
 const DynamodbFactory = require('@awspilot/dynamodb')
 DynamoDB = new DynamodbFactory(
 	new AWS.DynamoDB({
-		endpoint: 'http://localhost:8000',
+		endpoint: process.env.DYNAMODB_ENDPOINT,
 		accessKeyId: "myKeyId",
 		secretAccessKey: "secret",
-		"region": "us-east-1"
+		region: "us-east-1"
 	})
 )
 
@@ -20,8 +20,10 @@ async.waterfall([
 	// create table stacks if needed
 	function( cb ){
 		DynamoDB.client.describeTable({TableName: 'cloudformation_stacks'}, function(err, data) {
-			if (err.code !== 'ResourceNotFoundException')
+			if (err.code !== 'ResourceNotFoundException') {
+				console.log("table cloudformation_stacks exists")
 				return cb()
+			}
 
 			// create the table
 			DynamoDB.client.createTable({
@@ -51,10 +53,11 @@ async.waterfall([
 					WriteCapacityUnits: 5
 				},
 			}, function(err,data) {
-				if (err)
+				if (err) {
 					return cb(err)
+				}
 
-				console.log(err,data)
+				console.log("table cloudformation_stacks created")
 				cb()
 			})
 		})
@@ -93,8 +96,9 @@ async.waterfall([
 		})
 	},
 ], function(err) {
-	if (err)
+	if (err) {
+		console.log("error" ,err )
 		return process.exit()
-
+	}
 
 })

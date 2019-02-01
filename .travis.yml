@@ -12,6 +12,7 @@ node_js:
 
 env:
   global:
+    - DYNAMODB_ENDPOINT=http://localhost:8000
     - AWS_ACCESS_KEY_ID=fakeMyKeyId
     - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
     - AWS_REGION=us-east-1
