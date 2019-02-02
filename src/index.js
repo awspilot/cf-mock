@@ -1,5 +1,7 @@
 var http = require('http')
-var parse = require('querystring').parse
+//var parse = require('querystring').parse
+//var bodyParser = require('body-parser')
+var qs = require('qs')
 
 async=require('async')
 var AWS = require('aws-sdk')
@@ -140,8 +142,8 @@ async.waterfall([
 				body += chunk.toString(); // convert Buffer to string
 			});
 			request.on('end', function() {
-				var _POST = parse(body)
-
+				console.log(body)
+				var _POST = qs.parse(body)
 				cf[_POST.Action](_POST,function(err,data) {
 					response.end('')
 				})
