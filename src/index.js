@@ -41,6 +41,10 @@ async.waterfall([
 							AttributeName: "stack_id",
 							AttributeType: "S"
 						},
+						{
+							AttributeName: "name",
+							AttributeType: "S"
+						},
 					],
 					KeySchema: [
 						{
@@ -56,6 +60,26 @@ async.waterfall([
 						ReadCapacityUnits: 5,
 						WriteCapacityUnits: 5
 					},
+					GlobalSecondaryIndexes: [{
+						IndexName: 'name-index',
+						KeySchema: [
+							{
+								AttributeName: 'account_id',
+								KeyType: 'HASH'
+							},
+							{
+								AttributeName: 'name',
+								KeyType: 'RANGE'
+							},
+						],
+						Projection: {
+							ProjectionType: 'ALL'
+						},
+						ProvisionedThroughput: {
+							ReadCapacityUnits: 5,
+							WriteCapacityUnits: 5
+						}
+					}],
 				}, function(err,data) {
 					if (err) {
 						return cb(err)
