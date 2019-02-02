@@ -1,11 +1,9 @@
 var http = require('http')
-//var parse = require('querystring').parse
-//var bodyParser = require('body-parser')
 var qs = require('qs')
-
+form_parameters = require('./lib/form_parameters')
 async=require('async')
 var AWS = require('aws-sdk')
-
+var xml = require('xml');
 
 const DynamodbFactory = require('@awspilot/dynamodb')
 DynamoDB = new DynamodbFactory(
@@ -133,19 +131,52 @@ async.waterfall([
 
 	function( cb ) {
 		const requestHandler = function(request, response) {
+			if (request.headers.origin) {
+				response.setHeader('Access-Control-Allow-Origin', '*')
+
+				if (reqest.method == 'OPTIONS') {
+					if (reqest.headers['access-control-request-headers'])
+						response.setHeader('Access-Control-Allow-Headers', reqest.headers['access-control-request-headers'])
+
+					if (reqest.headers['access-control-request-method'])
+						response.setHeader('Access-Control-Allow-Methods', reqest.headers['access-control-request-method'])
+
+					response.setHeader('Access-Control-Max-Age', 172800)
+					return response.end('')
+				}
+
+				response.setHeader('Access-Control-Expose-Headers', 'x-amzn-RequestId,x-amzn-ErrorType,x-amz-request-id,x-amz-id-2,x-amzn-ErrorMessage,Date')
+			}
+
+
+
 			console.log("-----------------")
 			console.log(request.method, request.url)
-			console.log(request.headers)
+			//console.log(request.headers)
 
 			var body = '';
 			request.on('data', function(chunk) {
 				body += chunk.toString(); // convert Buffer to string
 			});
 			request.on('end', function() {
-				console.log(body)
+
 				var _POST = qs.parse(body)
+
 				cf[_POST.Action](_POST,function(err,data) {
-					response.end('')
+					//response.setHeader('Content-Type', 'application/x-www-form-urlencoded' )
+					response.setHeader('Content-Type', 'application/xml');
+					//response.setHeader('x-amzn-RequestId', uuid.v1())
+					//response.setHeader('x-amz-id-2', crypto.randomBytes(72).toString('base64'))
+
+					if (err) {
+						response.statusCode = 404
+
+						response.end(JSON.stringify(err))
+						return;
+					}
+					//response.setHeader('Content-Length', qs.stringify(data).length )
+					//response.end(qs.stringify(data))
+					response.end(xml({ data: data }))
 				})
 			});
 
