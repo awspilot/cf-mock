@@ -84,10 +84,6 @@ module.exports = {
 			},
 
 
-
-
-
-			//console.log("create stack", console.log('CreateStack', _POST))
 			//console.log(JSON.stringify(yml,null,"\t"))
 		], function( err ) {
 			if (err)
@@ -103,5 +99,70 @@ module.exports = {
 
 
 
+	},
+	DeleteStack: function(_POST, cb ) {
+		var account_id = '000000000000'
+
+		var stack;
+		async.waterfall([
+
+			// create stack in db
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_stacks')
+					.index('name-index')
+					.where('account_id').eq(account_id)
+					.where('name').eq(_POST.StackName)
+					.query(function(err,dbstacks) {
+						if (err)
+							return cb(err)
+
+						if (!dbstacks.length)
+							return cb({err: 'STACK_NOT_FOUND'})
+
+						stack=dbstacks[0];
+						cb()
+					})
+			},
+
+			// delete params
+			function(cb) {
+				DynamoDB
+					.table('cloudformation_stack_parameters')
+					.where('stack_id').eq(stack.stack_id)
+					.query(function(err,dbparams) {
+						if (err)
+							return cb(err)
+
+						async.each(dbparams, function(param,cb) {
+							DynamoDB
+								.table('cloudformation_stack_parameters')
+								.where('stack_id').eq(param.stack_id)
+								.where('key').eq( param.key )
+								.delete(cb)
+						}, function(err) {
+							cb(err)
+						})
+					})
+			},
+
+			// delete stack
+			function(cb) {
+				DynamoDB
+					.table('cloudformation_stacks')
+					.where('account_id').eq(account_id)
+					.where('stack_id').eq(stack.stack_id)
+					.delete(cb)
+			}
+		], function(err) {
+			if (err)
+				return cb(err)
+
+			console.log("stack=",stack)
+			cb(null, { Stack: stack})
+		})
+
+
+		//console.log('DeleteStack', _POST)
 	}
 }
