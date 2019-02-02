@@ -16,7 +16,7 @@ describe('init', function () {
 			done()
 		},10000)
 	})
-	it('waiting for cf to start', function(done) {
+	it('CreateStack', function(done) {
 
 		var params = {
 			StackName: 'STRING_VALUE',
@@ -44,4 +44,22 @@ describe('init', function () {
 			done()
 		});
 	})
+	it('DeleteStack', function(done) {
+		var params = {
+			StackName: 'STRING_VALUE',
+			// ClientRequestToken: 'STRING_VALUE',
+			// RetainResources: [
+			//   'STRING_VALUE',
+			//   /* more items */
+			// ],
+			// RoleARN: 'STRING_VALUE'
+		};
+		cloudformation.deleteStack(params, function(err, data) {
+			console.log(err,data)
+			done()
+		});
+	})
+
+
+
 })
