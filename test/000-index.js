@@ -1,3 +1,4 @@
+fs  = require('fs')
 AWS = require('aws-sdk')
 var cloudformation = new AWS.CloudFormation({
 	endpoint: 'http://localhost:10001',
@@ -22,21 +23,19 @@ describe('init', function () {
 		  // ClientRequestToken: 'STRING_VALUE',
 		  // DisableRollback: true || false,
 		  // EnableTerminationProtection: true || false,
-		  // NotificationARNs: [
-		  //   'STRING_VALUE',
+			NotificationARNs: [
+				'STRING_VALUE',
+				'STRING_VALUE2',
 		  //   /* more items */
-		  // ],
+			],
 		  // OnFailure: DO_NOTHING | ROLLBACK | DELETE,
-		  // Parameters: [
-		  //   {
-		  //     ParameterKey: 'STRING_VALUE',
-		  //     ParameterValue: 'STRING_VALUE',
-		  //     ResolvedValue: 'STRING_VALUE',
-		  //     UsePreviousValue: true || false
-		  //   },
-		  //   /* more items */
-		  // ],
-		  // TemplateBody: 'STRING_VALUE',
+			Parameters: [
+				{
+					ParameterKey: 'OrgDomain',
+					ParameterValue: 'testdomain.com',
+				},
+			],
+			TemplateBody: fs.readFileSync('./test/yamls/1.yaml','UTF-8'),
 		  // TemplateURL: 'STRING_VALUE',
 		  // TimeoutInMinutes: 0
 		};
