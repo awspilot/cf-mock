@@ -12,6 +12,7 @@
 	"dependencies": {
 		"qs": "*",
 		"js-yaml": "*",
+		"xml": "*",
 		"async": "*",
 		"aws-sdk": "*",
 		"@awspilot/dynamodb": "*"
