@@ -105,11 +105,11 @@ module.exports = {
 
 					try {
 						var respath = './Services/' + template.Resources[res_name].Type.split('::').join('/') + '/create.js';
-						require(respath)(res_name, template.Resources[res_name].Properties )
+						require(respath)(res_name, template.Resources[res_name].Properties, cb )
 					} catch (e) {
-						require('./Services/default.js')(res_name, template.Resources[res_name].Properties)
+						require('./Services/default.js')(res_name, template.Resources[res_name].Properties, cb )
 					}
-					cb()
+
 				}, function(err) {
 					if (err)
 						console.log(err)
