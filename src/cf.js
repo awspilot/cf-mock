@@ -105,9 +105,9 @@ module.exports = {
 
 					try {
 						var respath = './Services/' + template.Resources[res_name].Type.split('::').join('/') + '/create.js';
-						require(respath)(stack_id,res_name, template.Resources[res_name].Properties, cb )
+						require(respath)(stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					} catch (e) {
-						require('./Services/default.js')(stack_id,res_name, template.Resources[res_name].Properties, cb )
+						require('./Services/default.js')(stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					}
 
 				}, function(err) {
