@@ -90,16 +90,15 @@ module.exports = {
 				return cb(err)
 
 			cb(null, `
-<CreateStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
-  <CreateStackResult>
-    <StackId>arn:aws:cloudformation:us-east-1:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id + `</StackId>
-  </CreateStackResult>
-  <ResponseMetadata>
-    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
-  </ResponseMetadata>
-</CreateStackResponse>
-`)
-
+				<CreateStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+				  <CreateStackResult>
+				    <StackId>arn:aws:cloudformation:us-east-1:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id + `</StackId>
+				  </CreateStackResult>
+				  <ResponseMetadata>
+				    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+				  </ResponseMetadata>
+				</CreateStackResponse>
+			`)
 		})
 
 
@@ -166,8 +165,13 @@ module.exports = {
 			if (err)
 				return cb(err)
 
-			console.log("stack=",stack)
-			cb(null, { Stack: stack})
+			cb(null, `
+				<DeleteStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+				  <ResponseMetadata>
+				    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+				  </ResponseMetadata>
+				</DeleteStackResponse>
+			`)
 		})
 
 
