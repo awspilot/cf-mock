@@ -11,7 +11,7 @@ module.exports = {
 		form_parameters.extract_param('Parameters', _POST )
 		form_parameters.extract_param('NotificationARNs', _POST )
 
-		//console.log( "CreateStack", JSON.stringify(_POST))
+		//console.log( "CreateStack", JSON.stringify(_POST,null,"\t"))
 
 		if (!_POST.hasOwnProperty('Parameters'))
 			_POST.Parameters = []
@@ -41,6 +41,7 @@ module.exports = {
 
 				//yml = YAML.parse( _POST.TemplateBody )
 
+				console.log( "YML", JSON.stringify(template,null,"\t"))
 
 				cb()
 			},
@@ -83,6 +84,48 @@ module.exports = {
 					cb()
 				} )
 			},
+
+
+			// loop resources
+			function( cb ) {
+				var resources = Object.keys(template.Resources)
+				if (! Array.isArray(resources) )
+					return cb({ code: '', message: 'Invalid Resource List' })
+
+				async.each(resources, function(res_name, cb ) {
+
+					if (typeof template.Resources[res_name] !== "object" )
+						return cb({ code: '', message: 'Invalid Resource ' + res_name })
+
+					if (!template.Resources[res_name].hasOwnProperty('Type'))
+						return cb({ code: '', message: 'Missing Resource type for ' + res_name })
+
+					if (!template.Resources[res_name].hasOwnProperty('Properties'))
+						return cb({ code: '', message: 'Missing Resource properties for ' + res_name })
+
+					try {
+						var respath = './Services/' + template.Resources[res_name].Type.split('::').join('/') + '/create.js';
+						require(respath)(res_name, template.Resources[res_name].Properties )
+					} catch (e) {
+						require('./Services/default.js')(res_name, template.Resources[res_name].Properties)
+					}
+					cb()
+				}, function(err) {
+					if (err)
+						console.log(err)
+					cb(err)
+				})
+			},
+
+
+
+
+
+
+
+
+
+
 
 
 			// update stack.status = CREATE_COMPLETE
