@@ -200,7 +200,7 @@ async.waterfall([
 					}
 					//response.setHeader('Content-Length', qs.stringify(data).length )
 					//response.end(qs.stringify(data))
-					response.end(xml({ data: data }))
+					response.end(data)
 				})
 			});
 
