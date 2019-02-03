@@ -174,8 +174,8 @@ async.waterfall([
 
 
 
-			console.log("-----------------")
-			console.log(request.method, request.url)
+
+			//console.log(request.method, request.url)
 			//console.log(request.headers)
 
 			var body = '';
@@ -193,9 +193,18 @@ async.waterfall([
 					//response.setHeader('x-amz-id-2', crypto.randomBytes(72).toString('base64'))
 
 					if (err) {
-						response.statusCode = 404
+						response.statusCode = 403
 
-						response.end(JSON.stringify(err))
+						response.end(`
+							<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+							  <Error>
+							    <Type>Sender</Type>
+							    <Code>` + err.code + `</Code>
+							    <Message>` + err.message + `</Message>
+							  </Error>
+							  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+							</ErrorResponse>
+						`)
 						return;
 					}
 					//response.setHeader('Content-Length', qs.stringify(data).length )
