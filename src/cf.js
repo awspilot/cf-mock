@@ -27,6 +27,7 @@ module.exports = {
 						stack_id: stack_id,
 						name: _POST.StackName,
 						created_at: new Date().getTime(),
+						status: 'CREATE_IN_PROGRESS',
 					}, function(err,data) {
 						if (err)
 							return cb(err)
@@ -83,6 +84,15 @@ module.exports = {
 				} )
 			},
 
+
+			// update stack.status = CREATE_COMPLETE
+			function(cb) {
+				DynamoDB
+					.table('cloudformation_stacks')
+					.where('account_id').eq(account_id)
+					.where('stack_id').eq(stack_id)
+					.update({ status: 'CREATE_COMPLETE' },cb)
+			},
 
 			//console.log(JSON.stringify(yml,null,"\t"))
 		], function( err ) {
@@ -176,5 +186,67 @@ module.exports = {
 
 
 		//console.log('DeleteStack', _POST)
-	}
+	},
+	ListStacks: function(_POST, cb ) {
+		var account_id = '000000000000'
+
+		// CREATE_IN_PROGRESS | CREATE_FAILED | CREATE_COMPLETE | ROLLBACK_IN_PROGRESS | ROLLBACK_FAILED | ROLLBACK_COMPLETE | DELETE_IN_PROGRESS | DELETE_FAILED | DELETE_COMPLETE | UPDATE_IN_PROGRESS | UPDATE_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_COMPLETE | UPDATE_ROLLBACK_IN_PROGRESS | UPDATE_ROLLBACK_FAILED | UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_ROLLBACK_COMPLETE | REVIEW_IN_PROGRESS
+
+		// todo:  <CreationTime>2018-10-27T11:35:09.909Z</CreationTime>
+		ractive = new Ractive({
+			template: `
+			  <ListStacksResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+				<ListStacksResult>
+				  <StackSummaries>
+					{{#stacks}}
+					<member>
+					  <CreationTime>{{ .created_at }}</CreationTime>
+					  <StackId>arn:aws:cloudformation:us-east-1:{{account_id}}:stack/{{.name}}/{{.stack_id}}</StackId>
+					  <StackName>{{ .name }}</StackName>
+					  <DriftInformation>
+						<StackDriftStatus>NOT_CHECKED</StackDriftStatus>
+					  </DriftInformation>
+					  <StackStatus>{{ .status }}</StackStatus>
+						{{#if .status === 'DELETE_COMPLETE'}}
+							<DeletionTime>2019-02-03T11:18:10.251Z</DeletionTime>
+						{{/if}}
+						{{#if .status === 'UPDATE_COMPLETE' }}
+							<LastUpdatedTime>2018-10-27T14:16:07.628Z</LastUpdatedTime>
+						{{/if}}
+					</member>
+					{{/stacks}}
+				  </StackSummaries>
+				</ListStacksResult>
+				<ResponseMetadata>
+				  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+				</ResponseMetadata>
+			</ListStacksResponse>
+			`,
+			data: {
+			}
+		});
+
+		async.waterfall([
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_stacks')
+					.where('account_id').eq(account_id)
+					.query(function(err,data) {
+						if (err)
+							return cb(err)
+
+						ractive.set('stacks', data )
+						cb()
+					})
+			},
+		], function(err) {
+			if (err)
+				return cb(err)
+
+			cb(null, ractive.toHTML() )
+		})
+
+
+
+	},
 }

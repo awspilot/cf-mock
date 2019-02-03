@@ -3,7 +3,7 @@ var qs = require('qs')
 form_parameters = require('./lib/form_parameters')
 async=require('async')
 var AWS = require('aws-sdk')
-var Ractive = require('ractive')
+Ractive = require('ractive')
 
 const DynamodbFactory = require('@awspilot/dynamodb')
 DynamoDB = new DynamodbFactory(
