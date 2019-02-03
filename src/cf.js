@@ -72,7 +72,7 @@ module.exports = {
 
 
 					DynamoDB
-						.table('cloudformation_stack_parameters')
+						.table('cloudformation_parameters')
 						.insert_or_replace({
 							stack_id: stack_id,
 							key: p,
@@ -188,7 +188,7 @@ module.exports = {
 			// delete params
 			function(cb) {
 				DynamoDB
-					.table('cloudformation_stack_parameters')
+					.table('cloudformation_parameters')
 					.where('stack_id').eq(stack.stack_id)
 					.query(function(err,dbparams) {
 						if (err)
@@ -196,7 +196,7 @@ module.exports = {
 
 						async.each(dbparams, function(param,cb) {
 							DynamoDB
-								.table('cloudformation_stack_parameters')
+								.table('cloudformation_parameters')
 								.where('stack_id').eq(param.stack_id)
 								.where('key').eq( param.key )
 								.delete(cb)
