@@ -1,6 +1,6 @@
 
 module.exports = function(stack_id, res_name, type, properties, cb ) {
-	console.log( res_name )
+	//console.log( res_name )
 
 	DynamoDB
 		.table('cloudformation_resources')
