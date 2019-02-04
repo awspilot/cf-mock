@@ -16,6 +16,17 @@ DynamoDB = new DynamodbFactory(
 	})
 )
 
+
+ClientsDynamoDB = new DynamodbFactory(
+	new AWS.DynamoDB({
+		endpoint: process.env.DYNAMODB_ENDPOINT,
+		accessKeyId: "myKeyId",
+		secretAccessKey: "secretKey",
+		region: "us-east-1"
+	})
+)
+
+
 var cf=require('./cf')
 
 async.waterfall([
