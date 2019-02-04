@@ -206,13 +206,45 @@ module.exports = {
 					})
 			},
 
+			// loop resources
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_resources')
+					.where('stack_id').eq(stack.stack_id)
+					.query(function(err, dbresources ) {
+						if (err)
+							return cb(err)
+
+						async.each(dbresources, function(res, cb ) {
+
+							try {
+								var respath = './Services/' + res.type.split('::').join('/') + '/delete.js';
+						 		require(respath)( res.stack_id,res.resource_name, res.type, res.properties, cb  )
+							} catch (e) {
+								require('./Services/default/delete.js')(res.stack_id,res.resource_name, res.type, res.properties, cb )
+							}
+
+						}, function(err) {
+							if (err)
+								return cb(err)
+
+							cb()
+						})
+
+					})
+
+			},
+
+
 			// delete stack
-			function(cb) {
+			function( cb ) {
 				DynamoDB
 					.table('cloudformation_stacks')
 					.where('account_id').eq(account_id)
 					.where('stack_id').eq(stack.stack_id)
-					.delete(cb)
+					.delete(function(err) {
+						cb(err)
+					})
 			}
 		], function(err) {
 			if (err)
