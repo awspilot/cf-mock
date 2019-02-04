@@ -1,7 +1,6 @@
 
 
 module.exports = function(stack_id, res_name, type, properties, cb ) {
-	console.log( res_name )
 
 	async.waterfall([
 
@@ -24,7 +23,7 @@ module.exports = function(stack_id, res_name, type, properties, cb ) {
 
 		// actually create the table
 		function( cb ) {
-			console.log('creating table ', properties)
+
 			ClientsDynamoDB.client.createTable({
 				TableName: properties.TableName,
 				AttributeDefinitions: properties.AttributeDefinitions,
