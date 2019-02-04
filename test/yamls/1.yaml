@@ -35,9 +35,9 @@ Resources:
                 -
                   AttributeName: user_id
                   KeyType: HASH
-            # ProvisionedThroughput:
-            #     ReadCapacityUnits: 1
-            #     WriteCapacityUnits: 1
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
             GlobalSecondaryIndexes:
                 -
                     IndexName: username
@@ -86,9 +86,9 @@ Resources:
                 -
                   AttributeName: session_id
                   KeyType: HASH
-            # ProvisionedThroughput:
-            #     ReadCapacityUnits: 1
-            #     WriteCapacityUnits: 1
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
 
 
     DbPhotos:
@@ -119,9 +119,9 @@ Resources:
                 -
                   AttributeName: photo_id
                   KeyType: RANGE
-            # ProvisionedThroughput:
-            #     ReadCapacityUnits: 4
-            #     WriteCapacityUnits: 1
+            ProvisionedThroughput:
+                ReadCapacityUnits: 4
+                WriteCapacityUnits: 1
             GlobalSecondaryIndexes:
                 -
                     IndexName: album_id
@@ -134,9 +134,9 @@ Resources:
                         -
                             AttributeName: uploaded_at
                             KeyType: RANGE
-                    # ProvisionedThroughput:
-                    #     ReadCapacityUnits: 1
-                    #     WriteCapacityUnits: 1
+                    ProvisionedThroughput:
+                        ReadCapacityUnits: 1
+                        WriteCapacityUnits: 1
 
     DbAlbums:
         Type: AWS::DynamoDB::Table
@@ -157,6 +157,6 @@ Resources:
                 -
                   AttributeName: album_id
                   KeyType: RANGE
-            # ProvisionedThroughput:
-            #     ReadCapacityUnits: 1
-            #     WriteCapacityUnits: 1
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
