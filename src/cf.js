@@ -41,7 +41,7 @@ module.exports = {
 
 				//yml = YAML.parse( _POST.TemplateBody )
 
-				console.log( "YML", JSON.stringify(template,null,"\t"))
+				//console.log( "YML", JSON.stringify(template,null,"\t"))
 
 				cb()
 			},
