@@ -47,9 +47,9 @@ Resources:
                         -
                             AttributeName: username
                             KeyType: HASH
-                    # ProvisionedThroughput:
-                    #     ReadCapacityUnits: 1
-                    #     WriteCapacityUnits: 1
+                    ProvisionedThroughput:
+                        ReadCapacityUnits: 1
+                        WriteCapacityUnits: 1
                 -
                     IndexName: email
                     Projection:
@@ -58,9 +58,9 @@ Resources:
                         -
                             AttributeName: email
                             KeyType: HASH
-                    # ProvisionedThroughput:
-                    #     ReadCapacityUnits: 1
-                    #     WriteCapacityUnits: 1
+                    ProvisionedThroughput:
+                        ReadCapacityUnits: 1
+                        WriteCapacityUnits: 1
                 -
                     IndexName: preferred_username
                     Projection:
@@ -69,9 +69,9 @@ Resources:
                         -
                             AttributeName: preferred_username
                             KeyType: HASH
-                    # ProvisionedThroughput:
-                    #     ReadCapacityUnits: 1
-                    #     WriteCapacityUnits: 1
+                    ProvisionedThroughput:
+                        ReadCapacityUnits: 1
+                        WriteCapacityUnits: 1
     DbSessions:
         Type: AWS::DynamoDB::Table
         Properties:
