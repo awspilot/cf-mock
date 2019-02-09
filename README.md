@@ -1,1 +1,28 @@
 # cf-mock
+
+Not much value in here, just a subproject of @awspilot/dynamodb-ui
+
+It's main purpose is to expose a minimal api that mimic the AWS Cloudformation functionality
+
+Why ? Manage tables inside dynamodb-local using cloudformation templates
+
+
+cf-mock uses dynamodb as storage
+
+```
+	npm install @awspilot/cf-mock
+```
+
+```
+	export CF_DYNAMODB_ENDPOINT="http://localhost:8000/us-east-1"
+	export CF_DYNAMODB_KEY="myKeyId"
+	export CF_DYNAMODB_SECRET="secretKey"
+	# CF_DYNAMODB_REGION - will be taken from CF_DYNAMODB_ENDPOINT path
+
+	export DYNAMODB_ENDPOINT="http://localhost:8000"
+	export DYNAMODB_KEY="myKeyId"
+	export DYNAMODB_SECRET="secretKey"
+	# DYNAMODB_REGION - will be taken from CF_DYNAMODB_ENDPOINT
+
+ 	cf-mock
+```
