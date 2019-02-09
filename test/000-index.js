@@ -1,12 +1,16 @@
 fs  = require('fs')
 AWS = require('aws-sdk')
 var cloudformation = new AWS.CloudFormation({
-	endpoint: 'http://localhost:10001',
+	endpoint: 'http://localhost:10001/us-east-1',
 	region: 'us-east-1',
 	accessKeyId: "myKeyId",
 	secretAccessKey: "secretKey",
 });
 process.env.DYNAMODB_ENDPOINT="http://localhost:8000"
+// process.env.DYNAMODB_KEY="myKeyId"
+// process.env.DYNAMODB_SECRET="secretKey"
+// process.env.DYNAMODB_REGION="us-east-1"
+
 
 require("../src/index")
 

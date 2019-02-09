@@ -7,14 +7,7 @@ Ractive = require('ractive')
 Ractive.DEBUG = false;
 
 const DynamodbFactory = require('@awspilot/dynamodb')
-DynamoDB = new DynamodbFactory(
-	new AWS.DynamoDB({
-		endpoint: process.env.DYNAMODB_ENDPOINT,
-		accessKeyId: "myKeyId",
-		secretAccessKey: "secretKey",
-		region: "us-east-1"
-	})
-)
+
 
 
 ClientsDynamoDB = new DynamodbFactory(
@@ -31,190 +24,6 @@ var cf=require('./cf')
 
 async.waterfall([
 
-	// create table stacks if needed
-	function( cb ){
-		DynamoDB.client.describeTable({TableName: 'cloudformation_stacks'}, function(err, data) {
-			if (!err) {
-				console.log("table cloudformation_stacks exists")
-				return cb()
-			}
-
-
-			if ( err.code === 'ResourceNotFoundException') {
-				// create the table
-				DynamoDB.client.createTable({
-					TableName: "cloudformation_stacks",
-					AttributeDefinitions: [
-						{
-							AttributeName: "account_id",
-							AttributeType: "S"
-						},
-						{
-							AttributeName: "stack_id",
-							AttributeType: "S"
-						},
-						{
-							AttributeName: "name",
-							AttributeType: "S"
-						},
-					],
-					KeySchema: [
-						{
-							AttributeName: "account_id",
-							KeyType: "HASH"
-						},
-						{
-							AttributeName: "stack_id",
-							KeyType: "RANGE"
-						}
-					],
-					ProvisionedThroughput: {
-						ReadCapacityUnits: 5,
-						WriteCapacityUnits: 5
-					},
-					GlobalSecondaryIndexes: [{
-						IndexName: 'name-index',
-						KeySchema: [
-							{
-								AttributeName: 'account_id',
-								KeyType: 'HASH'
-							},
-							{
-								AttributeName: 'name',
-								KeyType: 'RANGE'
-							},
-						],
-						Projection: {
-							ProjectionType: 'ALL'
-						},
-						ProvisionedThroughput: {
-							ReadCapacityUnits: 5,
-							WriteCapacityUnits: 5
-						}
-					}],
-				}, function(err,data) {
-					if (err) {
-						return cb(err)
-					}
-
-					console.log("table cloudformation_stacks created")
-					cb()
-				})
-				return
-			} else {
-				throw err
-			}
-
-		})
-	},
-
-
-	// create table stack_parameters if needed
-	function( cb ){
-		DynamoDB.client.describeTable({TableName: 'cloudformation_parameters'}, function(err, data) {
-			if (!err) {
-				console.log("table cloudformation_parameters exists")
-				return cb()
-			}
-
-
-			if ( err.code === 'ResourceNotFoundException') {
-				// create the table
-				DynamoDB.client.createTable({
-					TableName: "cloudformation_parameters",
-					AttributeDefinitions: [
-						{
-							AttributeName: "stack_id",
-							AttributeType: "S"
-						},
-						{
-							AttributeName: "key",
-							AttributeType: "S"
-						},
-					],
-					KeySchema: [
-						{
-							AttributeName: "stack_id",
-							KeyType: "HASH"
-						},
-						{
-							AttributeName: "key",
-							KeyType: "RANGE"
-						}
-					],
-					ProvisionedThroughput: {
-						ReadCapacityUnits: 5,
-						WriteCapacityUnits: 5
-					},
-				}, function(err,data) {
-					if (err) {
-						return cb(err)
-					}
-
-					console.log("table cloudformation_parameters created")
-					cb()
-				})
-				return
-			} else {
-				throw err
-			}
-
-		})
-	},
-
-
-	// create table cloudformation_resources if needed
-	function( cb ){
-		DynamoDB.client.describeTable({TableName: 'cloudformation_resources'}, function(err, data) {
-			if (!err) {
-				console.log("table cloudformation_resources exists")
-				return cb()
-			}
-
-
-			if ( err.code === 'ResourceNotFoundException') {
-				// create the table
-				DynamoDB.client.createTable({
-					TableName: "cloudformation_resources",
-					AttributeDefinitions: [
-						{
-							AttributeName: "stack_id",
-							AttributeType: "S"
-						},
-						{
-							AttributeName: "resource_name",
-							AttributeType: "S"
-						},
-					],
-					KeySchema: [
-						{
-							AttributeName: "stack_id",
-							KeyType: "HASH"
-						},
-						{
-							AttributeName: "resource_name",
-							KeyType: "RANGE"
-						}
-					],
-					ProvisionedThroughput: {
-						ReadCapacityUnits: 5,
-						WriteCapacityUnits: 5
-					},
-				}, function(err,data) {
-					if (err) {
-						return cb(err)
-					}
-
-					console.log("table cloudformation_resources created")
-					cb()
-				})
-				return
-			} else {
-				throw err
-			}
-
-		})
-	},
 
 
 	function( cb ) {
@@ -249,32 +58,234 @@ async.waterfall([
 			request.on('end', function() {
 
 				var _POST = qs.parse(body)
+				var region = request.url.slice(1)
 
-				cf[_POST.Action](_POST,function(err,data) {
-					//response.setHeader('Content-Type', 'application/x-www-form-urlencoded' )
-					response.setHeader('Content-Type', 'application/xml');
-					//response.setHeader('x-amzn-RequestId', uuid.v1())
-					//response.setHeader('x-amz-id-2', crypto.randomBytes(72).toString('base64'))
+				var DynamoDB = new DynamodbFactory(
+					new AWS.DynamoDB({
+						endpoint: process.env.DYNAMODB_ENDPOINT,
+						accessKeyId: "myKeyId",
+						secretAccessKey: "secretKey",
+						region: region,
+					})
+				)
 
-					if (err) {
-						response.statusCode = 403
+				async.waterfall([
+					// create table stacks if needed
+					function( cb ){
+						DynamoDB.client.describeTable({TableName: 'cloudformation_stacks'}, function(err, data) {
+							if (!err) {
+								console.log("table cloudformation_stacks exists")
+								return cb()
+							}
 
-						response.end(`
-							<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
-							  <Error>
-							    <Type>Sender</Type>
-							    <Code>` + err.code + `</Code>
-							    <Message>` + err.message + `</Message>
-							  </Error>
-							  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
-							</ErrorResponse>
-						`)
-						return;
-					}
-					//response.setHeader('Content-Length', qs.stringify(data).length )
-					//response.end(qs.stringify(data))
-					response.end(data)
+
+							if ( err.code === 'ResourceNotFoundException') {
+								// create the table
+								DynamoDB.client.createTable({
+									TableName: "cloudformation_stacks",
+									AttributeDefinitions: [
+										{
+											AttributeName: "account_id",
+											AttributeType: "S"
+										},
+										{
+											AttributeName: "stack_id",
+											AttributeType: "S"
+										},
+										{
+											AttributeName: "name",
+											AttributeType: "S"
+										},
+									],
+									KeySchema: [
+										{
+											AttributeName: "account_id",
+											KeyType: "HASH"
+										},
+										{
+											AttributeName: "stack_id",
+											KeyType: "RANGE"
+										}
+									],
+									ProvisionedThroughput: {
+										ReadCapacityUnits: 5,
+										WriteCapacityUnits: 5
+									},
+									GlobalSecondaryIndexes: [{
+										IndexName: 'name-index',
+										KeySchema: [
+											{
+												AttributeName: 'account_id',
+												KeyType: 'HASH'
+											},
+											{
+												AttributeName: 'name',
+												KeyType: 'RANGE'
+											},
+										],
+										Projection: {
+											ProjectionType: 'ALL'
+										},
+										ProvisionedThroughput: {
+											ReadCapacityUnits: 5,
+											WriteCapacityUnits: 5
+										}
+									}],
+								}, function(err,data) {
+									if (err) {
+										return cb(err)
+									}
+
+									console.log("table cloudformation_stacks created")
+									cb()
+								})
+								return
+							} else {
+								throw err
+							}
+
+						})
+					},
+
+
+					// create table stack_parameters if needed
+					function( cb ){
+						DynamoDB.client.describeTable({TableName: 'cloudformation_parameters'}, function(err, data) {
+							if (!err) {
+								console.log("table cloudformation_parameters exists")
+								return cb()
+							}
+
+
+							if ( err.code === 'ResourceNotFoundException') {
+								// create the table
+								DynamoDB.client.createTable({
+									TableName: "cloudformation_parameters",
+									AttributeDefinitions: [
+										{
+											AttributeName: "stack_id",
+											AttributeType: "S"
+										},
+										{
+											AttributeName: "key",
+											AttributeType: "S"
+										},
+									],
+									KeySchema: [
+										{
+											AttributeName: "stack_id",
+											KeyType: "HASH"
+										},
+										{
+											AttributeName: "key",
+											KeyType: "RANGE"
+										}
+									],
+									ProvisionedThroughput: {
+										ReadCapacityUnits: 5,
+										WriteCapacityUnits: 5
+									},
+								}, function(err,data) {
+									if (err) {
+										return cb(err)
+									}
+
+									console.log("table cloudformation_parameters created")
+									cb()
+								})
+								return
+							} else {
+								throw err
+							}
+
+						})
+					},
+
+
+					// create table cloudformation_resources if needed
+					function( cb ){
+						DynamoDB.client.describeTable({TableName: 'cloudformation_resources'}, function(err, data) {
+							if (!err) {
+								console.log("table cloudformation_resources exists")
+								return cb()
+							}
+
+
+							if ( err.code === 'ResourceNotFoundException') {
+								// create the table
+								DynamoDB.client.createTable({
+									TableName: "cloudformation_resources",
+									AttributeDefinitions: [
+										{
+											AttributeName: "stack_id",
+											AttributeType: "S"
+										},
+										{
+											AttributeName: "resource_name",
+											AttributeType: "S"
+										},
+									],
+									KeySchema: [
+										{
+											AttributeName: "stack_id",
+											KeyType: "HASH"
+										},
+										{
+											AttributeName: "resource_name",
+											KeyType: "RANGE"
+										}
+									],
+									ProvisionedThroughput: {
+										ReadCapacityUnits: 5,
+										WriteCapacityUnits: 5
+									},
+								}, function(err,data) {
+									if (err) {
+										return cb(err)
+									}
+
+									console.log("table cloudformation_resources created")
+									cb()
+								})
+								return
+							} else {
+								throw err
+							}
+
+						})
+					},
+
+				], function() {
+
+					cf[_POST.Action](_POST,DynamoDB,function(err,data) {
+						//response.setHeader('Content-Type', 'application/x-www-form-urlencoded' )
+						response.setHeader('Content-Type', 'application/xml');
+						//response.setHeader('x-amzn-RequestId', uuid.v1())
+						//response.setHeader('x-amz-id-2', crypto.randomBytes(72).toString('base64'))
+
+						if (err) {
+							response.statusCode = 403
+
+							response.end(`
+								<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+								  <Error>
+								    <Type>Sender</Type>
+								    <Code>` + err.code + `</Code>
+								    <Message>` + err.message + `</Message>
+								  </Error>
+								  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+								</ErrorResponse>
+							`)
+							return;
+						}
+						//response.setHeader('Content-Length', qs.stringify(data).length )
+						//response.end(qs.stringify(data))
+						response.end(data)
+					})
+
 				})
+
+
 			});
 
 		}
