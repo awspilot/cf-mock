@@ -292,8 +292,12 @@ async.waterfall([
 
 		}
 		const server = http.createServer(requestHandler)
-		server.listen(10001,function(err) {
-			console.log("listen error", err)
+		server.listen(process.env.PORT || 10001,function(err) {
+			if (err) {
+				console.log("Failed listening ", err )
+				process.exit()
+			}
+
 		})
 	},
 ], function(err) {

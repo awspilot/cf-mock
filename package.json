@@ -9,6 +9,9 @@
 	"scripts": {
 		"test": "mocha --timeout 100000 -S -R spec --exit"
 	},
+	"bin": {
+		"cf-mock": "./cli.js" 
+	},
 	"dependencies": {
 		"qs": "*",
 		"js-yaml": "*",
