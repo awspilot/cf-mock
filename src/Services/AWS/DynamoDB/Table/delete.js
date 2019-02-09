@@ -1,5 +1,5 @@
 
-module.exports = function(DynamoDB, stack_id, res_name, type, properties, cb ) {
+module.exports = function(DynamoDB, ClientsDynamoDB, stack_id, res_name, type, properties, cb ) {
 	//console.log( res_name )
 
 	async.waterfall([

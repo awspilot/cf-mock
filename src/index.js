@@ -10,14 +10,6 @@ const DynamodbFactory = require('@awspilot/dynamodb')
 
 
 
-ClientsDynamoDB = new DynamodbFactory(
-	new AWS.DynamoDB({
-		endpoint: process.env.DYNAMODB_ENDPOINT,
-		accessKeyId: "myKeyId",
-		secretAccessKey: "secretKey",
-		region: "us-east-1"
-	})
-)
 
 
 var cf=require('./cf')
@@ -62,12 +54,22 @@ async.waterfall([
 
 				var DynamoDB = new DynamodbFactory(
 					new AWS.DynamoDB({
-						endpoint: process.env.DYNAMODB_ENDPOINT,
-						accessKeyId: "myKeyId",
-						secretAccessKey: "secretKey",
-						region: region,
+						endpoint:        process.env.CF_DYNAMODB_ENDPOINT,
+						accessKeyId:     process.env.CF_DYNAMODB_KEY,
+						secretAccessKey: process.env.CF_DYNAMODB_SECRET,
+						region:          region,
 					})
 				)
+
+				var ClientsDynamoDB = new DynamodbFactory(
+					new AWS.DynamoDB({
+						endpoint:        process.env.DYNAMODB_ENDPOINT,
+						accessKeyId:     process.env.DYNAMODB_KEY,
+						secretAccessKey: process.env.DYNAMODB_SECRET,
+						region:          region,
+					})
+				)
+
 
 				async.waterfall([
 					// create table stacks if needed
@@ -257,7 +259,7 @@ async.waterfall([
 
 				], function() {
 
-					cf[_POST.Action](_POST,DynamoDB,region,function(err,data) {
+					cf[_POST.Action](_POST,DynamoDB,ClientsDynamoDB, region,function(err,data) {
 						//response.setHeader('Content-Type', 'application/x-www-form-urlencoded' )
 						response.setHeader('Content-Type', 'application/xml');
 						//response.setHeader('x-amzn-RequestId', uuid.v1())

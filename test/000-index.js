@@ -10,10 +10,18 @@ var cloudformation = new AWS.CloudFormation({
 	accessKeyId: "myKeyId",
 	secretAccessKey: "secretKey",
 });
+
+
+// cloudformation dynamodb
+process.env.CF_DYNAMODB_ENDPOINT="http://localhost:8000"
+process.env.CF_DYNAMODB_KEY="myKeyId"
+process.env.CF_DYNAMODB_SECRET="secretKey"
+// process.env.CF_DYNAMODB_REGION - is taken from the cloudformation endpoint (/us-east-2)
+
 process.env.DYNAMODB_ENDPOINT="http://localhost:8000"
-// process.env.DYNAMODB_KEY="myKeyId"
-// process.env.DYNAMODB_SECRET="secretKey"
-// process.env.DYNAMODB_REGION="us-east-1"
+process.env.DYNAMODB_KEY="myKeyId"
+process.env.DYNAMODB_SECRET="secretKey"
+// process.env.DYNAMODB_REGION - is taken from the cloudformation endpoint (/us-east-2)
 
 
 require("../src/index")
