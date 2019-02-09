@@ -257,7 +257,7 @@ async.waterfall([
 
 				], function() {
 
-					cf[_POST.Action](_POST,DynamoDB,function(err,data) {
+					cf[_POST.Action](_POST,DynamoDB,region,function(err,data) {
 						//response.setHeader('Content-Type', 'application/x-www-form-urlencoded' )
 						response.setHeader('Content-Type', 'application/xml');
 						//response.setHeader('x-amzn-RequestId', uuid.v1())

@@ -3,7 +3,7 @@ var yaml = require('js-yaml')
 
 
 module.exports = {
-	CreateStack: function(_POST, DynamoDB, cb ) {
+	CreateStack: function(_POST, DynamoDB, region, cb ) {
 		var account_id = '000000000000'
 		var stack_id   = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); });
 		var template;
@@ -145,7 +145,7 @@ module.exports = {
 			cb(null, `
 				<CreateStackResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
 				  <CreateStackResult>
-				    <StackId>arn:aws:cloudformation:us-east-1:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id + `</StackId>
+				    <StackId>arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id + `</StackId>
 				  </CreateStackResult>
 				  <ResponseMetadata>
 				    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
@@ -160,7 +160,7 @@ module.exports = {
 
 
 	},
-	DeleteStack: function(_POST, DynamoDB, cb ) {
+	DeleteStack: function(_POST, DynamoDB, region, cb ) {
 		var account_id = '000000000000'
 
 		var stack;
@@ -262,7 +262,7 @@ module.exports = {
 
 		//console.log('DeleteStack', _POST)
 	},
-	ListStacks: function(_POST, DynamoDB, cb ) {
+	ListStacks: function(_POST, DynamoDB, region, cb ) {
 		var account_id = '000000000000'
 
 		// CREATE_IN_PROGRESS | CREATE_FAILED | CREATE_COMPLETE | ROLLBACK_IN_PROGRESS | ROLLBACK_FAILED | ROLLBACK_COMPLETE | DELETE_IN_PROGRESS | DELETE_FAILED | DELETE_COMPLETE | UPDATE_IN_PROGRESS | UPDATE_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_COMPLETE | UPDATE_ROLLBACK_IN_PROGRESS | UPDATE_ROLLBACK_FAILED | UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_ROLLBACK_COMPLETE | REVIEW_IN_PROGRESS
@@ -276,7 +276,7 @@ module.exports = {
 					{{#stacks}}
 					<member>
 					  <CreationTime>{{ .created_at }}</CreationTime>
-					  <StackId>arn:aws:cloudformation:us-east-1:{{account_id}}:stack/{{.name}}/{{.stack_id}}</StackId>
+					  <StackId>arn:aws:cloudformation:`+region+`:{{account_id}}:stack/{{.name}}/{{.stack_id}}</StackId>
 					  <StackName>{{ .name }}</StackName>
 					  <DriftInformation>
 						<StackDriftStatus>NOT_CHECKED</StackDriftStatus>
