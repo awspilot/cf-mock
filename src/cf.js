@@ -17,6 +17,10 @@ module.exports = {
 		if (!_POST.hasOwnProperty('Parameters'))
 			_POST.Parameters = []
 
+		var resolve_global = function( param ) {
+			return "unsupported " + param;
+		}
+
 		async.waterfall([
 
 			// check name
@@ -108,27 +112,24 @@ module.exports = {
 			function( cb ) {
 				// will parse json aswell
 
-				// replace any !Ref with "references"
+
+				var re = /\!Ref\s+\"(AWS)::(EC2)::(Subnet)\"/gm
+				var refs = null
+				while ( refs = re.exec(_POST.TemplateBody)) {
+					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
+				}
+
+
 
 				var re = /\!Ref\s+\"([a-zA-Z0-9]+)\"/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
-					// console.log(
-					// 	JSON.stringify(
-					// 		refs
-					// 	)
-					// )
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(parameters[refs[1]])
 				}
 
 				var re = /\!Ref\s+([a-zA-Z0-9]+)$/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
-					// console.log(
-					// 	JSON.stringify(
-					// 		refs
-					// 	)
-					// )
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(parameters[refs[1]])
 				}
 
@@ -140,7 +141,7 @@ module.exports = {
 
 				//yml = YAML.parse( _POST.TemplateBody )
 
-				//console.log( "YML", JSON.stringify(template,null,"\t"))
+				console.log( "YML", JSON.stringify(template,null,"\t"))
 
 				cb()
 			},

@@ -9,9 +9,10 @@ Parameters:
 Resources:
 
     DbUsers:
-        Type: AWS::DynamoDB::Table
+        Type: Hello:World
         Properties:
             TableName: users
+            Test1: !Ref "AWS::EC2::Subnet"
             BillingMode: PAY_PER_REQUEST
             AttributeDefinitions:
                 -
