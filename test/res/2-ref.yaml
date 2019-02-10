@@ -15,7 +15,7 @@ Resources:
             Test2: !Ref "AWS::AccountId"
             Test3: !Ref AWS::EC2::Subnet
             Test4: !Ref AWS::AccountId
-
+            Test5: !GetAtt myELB.DNSName
             ProvisionedThroughput:
                 ReadCapacityUnits: !Ref "ReadCapacity"
                 WriteCapacityUnits: !Ref WriteCapacity

@@ -22,6 +22,10 @@ module.exports = {
 			return "unsupported " + param;
 		}
 
+		var get_att = function( res, attr ) {
+			return "not implemented GetAttribute( "+res+" , "+attr+" )";
+		}
+
 		async.waterfall([
 
 			// check name
@@ -68,6 +72,7 @@ module.exports = {
 					var temp_template = yaml.safeLoad(
 						_POST.TemplateBody
 							.split('!Ref').join('references')
+							.split('!GetAtt').join('getattribute')
 					)
 				} catch (e) {
 					return cb({ code: '', message: 'Template failed to parse'})
@@ -154,14 +159,23 @@ module.exports = {
 				}
 
 
+				var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)\s?$/gm
+				var refs = null
+				while ( refs = re.exec(_POST.TemplateBody)) {
+					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( get_att(refs[1] ,  refs[2] )  )
+				}
 
-				template = yaml.safeLoad( _POST.TemplateBody )
 
+				try {
+					template = yaml.safeLoad( _POST.TemplateBody )
+				} catch (e) {
+
+				}
 
 
 				//yml = YAML.parse( _POST.TemplateBody )
 
-				console.log( "YML", JSON.stringify(template,null,"\t"))
+				//console.log( "YML", JSON.stringify(template,null,"\t"))
 
 				cb()
 			},
