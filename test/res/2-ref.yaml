@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+    ReadCapacity:
+        Type: String
+        Default: 202
+    WriteCapacity:
+        Type: String
+        Default: 101
+Resources:
+
+    DbUsers:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: users
+            BillingMode: PAY_PER_REQUEST
+            AttributeDefinitions:
+                -
+                  AttributeName: user_id
+                  AttributeType: S
+            KeySchema:
+                -
+                  AttributeName: user_id
+                  KeyType: HASH
+            ProvisionedThroughput:
+                ReadCapacityUnits: !Ref "ReadCapacity"
+                WriteCapacityUnits: !Ref "WriteCapacity"
