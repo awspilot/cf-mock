@@ -23,4 +23,4 @@ Resources:
                   KeyType: HASH
             ProvisionedThroughput:
                 ReadCapacityUnits: !Ref "ReadCapacity"
-                WriteCapacityUnits: !Ref "WriteCapacity"
+                WriteCapacityUnits: !Ref WriteCapacity

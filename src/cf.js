@@ -121,6 +121,19 @@ module.exports = {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(parameters[refs[1]])
 				}
 
+				var re = /\!Ref\s+([a-zA-Z0-9]+)$/gm
+				var refs = null
+				while ( refs = re.exec(_POST.TemplateBody)) {
+					// console.log(
+					// 	JSON.stringify(
+					// 		refs
+					// 	)
+					// )
+					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(parameters[refs[1]])
+				}
+
+
+
 				template = yaml.safeLoad( _POST.TemplateBody )
 
 
