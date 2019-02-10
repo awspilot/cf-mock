@@ -57,6 +57,7 @@ module.exports = {
 			},
 
 			function( cb ) {
+				// will parse json aswell
 				template = yaml.safeLoad( _POST.TemplateBody )
 
 				//yml = YAML.parse( _POST.TemplateBody )
