@@ -137,26 +137,3 @@ Resources:
                     ProvisionedThroughput:
                         ReadCapacityUnits: 1
                         WriteCapacityUnits: 1
-
-    DbAlbums:
-        Type: AWS::DynamoDB::Table
-        Properties:
-            TableName: albums
-            BillingMode: PAY_PER_REQUEST
-            AttributeDefinitions:
-                -
-                  AttributeName: user_id
-                  AttributeType: S
-                -
-                  AttributeName: album_id
-                  AttributeType: S
-            KeySchema:
-                -
-                  AttributeName: user_id
-                  KeyType: HASH
-                -
-                  AttributeName: album_id
-                  KeyType: RANGE
-            ProvisionedThroughput:
-                ReadCapacityUnits: 1
-                WriteCapacityUnits: 1

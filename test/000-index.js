@@ -32,7 +32,7 @@ describe('init', function () {
 			done()
 		},9000)
 	})
-	it('CreateStack', function(done) {
+	it('CreateStack(yml)', function(done) {
 
 		var params = {
 			StackName: 'STRING_VALUE',
@@ -50,7 +50,7 @@ describe('init', function () {
 					ParameterValue: 'testdomain.com',
 				},
 			],
-			TemplateBody: fs.readFileSync('./test/yamls/1.yaml','UTF-8'),
+			TemplateBody: fs.readFileSync('./test/res/1.yaml','UTF-8'),
 		  // TemplateURL: 'STRING_VALUE',
 		  // TimeoutInMinutes: 0
 		};
@@ -96,4 +96,33 @@ describe('init', function () {
 
 
 
+
+	it('CreateStack(json)', function(done) {
+
+		var params = {
+			StackName: 'STRING_VALUE',
+			TemplateBody: fs.readFileSync('./test/res/1.json','UTF-8'),
+		};
+		cloudformation.createStack(params, function(err, data) {
+			console.log("CreateStack",err,data)
+			setTimeout(function() {
+				done()
+			}, 5000)
+		});
+	})
+	it('DeleteStack', function(done) {
+		var params = {
+			StackName: 'STRING_VALUE',
+			// ClientRequestToken: 'STRING_VALUE',
+			// RetainResources: [
+			//   'STRING_VALUE',
+			//   /* more items */
+			// ],
+			// RoleARN: 'STRING_VALUE'
+		};
+		cloudformation.deleteStack(params, function(err, data) {
+			console.log("deleteStack",err,data)
+			done()
+		});
+	})
 })
