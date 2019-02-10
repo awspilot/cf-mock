@@ -76,7 +76,6 @@ async.waterfall([
 					function( cb ){
 						DynamoDB.client.describeTable({TableName: 'cloudformation_stacks'}, function(err, data) {
 							if (!err) {
-								console.log("table cloudformation_stacks exists")
 								return cb()
 							}
 
@@ -138,7 +137,6 @@ async.waterfall([
 										return cb(err)
 									}
 
-									console.log("table cloudformation_stacks created")
 									cb()
 								})
 								return
@@ -154,7 +152,6 @@ async.waterfall([
 					function( cb ){
 						DynamoDB.client.describeTable({TableName: 'cloudformation_parameters'}, function(err, data) {
 							if (!err) {
-								console.log("table cloudformation_parameters exists")
 								return cb()
 							}
 
@@ -192,7 +189,6 @@ async.waterfall([
 										return cb(err)
 									}
 
-									console.log("table cloudformation_parameters created")
 									cb()
 								})
 								return
@@ -208,7 +204,7 @@ async.waterfall([
 					function( cb ){
 						DynamoDB.client.describeTable({TableName: 'cloudformation_resources'}, function(err, data) {
 							if (!err) {
-								console.log("table cloudformation_resources exists")
+
 								return cb()
 							}
 
@@ -246,7 +242,7 @@ async.waterfall([
 										return cb(err)
 									}
 
-									console.log("table cloudformation_resources created")
+
 									cb()
 								})
 								return
