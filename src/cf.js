@@ -119,6 +119,11 @@ module.exports = {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
 				}
 
+				var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
+				var refs = null
+				while ( refs = re.exec(_POST.TemplateBody)) {
+					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2])  )
+				}
 
 
 				var re = /\!Ref\s+\"([a-zA-Z0-9]+)\"/gm

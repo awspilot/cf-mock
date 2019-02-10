@@ -12,7 +12,7 @@ Resources:
         Type: Hello:World
         Properties:
             Test1: !Ref "AWS::EC2::Subnet"
-            Test2: !Ref "AWS::AccountId::xx"
+            Test2: !Ref "AWS::AccountId"
             ProvisionedThroughput:
                 ReadCapacityUnits: !Ref "ReadCapacity"
                 WriteCapacityUnits: !Ref WriteCapacity
