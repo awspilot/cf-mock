@@ -17,6 +17,7 @@ module.exports = {
 		if (!_POST.hasOwnProperty('Parameters'))
 			_POST.Parameters = []
 
+		// list of refs https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
 		var resolve_global = function( param ) {
 			return "unsupported " + param;
 		}
