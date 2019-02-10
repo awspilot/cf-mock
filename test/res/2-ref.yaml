@@ -11,17 +11,8 @@ Resources:
     DbUsers:
         Type: Hello:World
         Properties:
-            TableName: users
             Test1: !Ref "AWS::EC2::Subnet"
-            BillingMode: PAY_PER_REQUEST
-            AttributeDefinitions:
-                -
-                  AttributeName: user_id
-                  AttributeType: S
-            KeySchema:
-                -
-                  AttributeName: user_id
-                  KeyType: HASH
+            Test2: !Ref "AWS::AccountId::xx"
             ProvisionedThroughput:
                 ReadCapacityUnits: !Ref "ReadCapacity"
                 WriteCapacityUnits: !Ref WriteCapacity

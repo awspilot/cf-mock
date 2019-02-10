@@ -113,7 +113,7 @@ module.exports = {
 				// will parse json aswell
 
 
-				var re = /\!Ref\s+\"(AWS)::(EC2)::(Subnet)\"/gm
+				var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
