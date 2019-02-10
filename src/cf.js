@@ -17,7 +17,8 @@ module.exports = {
 		if (!_POST.hasOwnProperty('Parameters'))
 			_POST.Parameters = []
 
-		// list of refs https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
+		// funcs https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html
+		// pseudo parameters https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/pseudo-parameter-reference.html
 		var resolve_global = function( param ) {
 			return "unsupported " + param;
 		}
@@ -165,6 +166,17 @@ module.exports = {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( get_att(refs[1] ,  refs[2] )  )
 				}
 
+
+				/*
+					@todo:
+						Fn::Base64
+						Fn::FindInMap
+						Fn::GetAZs
+						Fn::If
+						Fn::Join
+						Fn::Select
+						Fn::Sub
+				*/
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )
