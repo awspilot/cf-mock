@@ -110,7 +110,7 @@ module.exports = {
 
 				// replace any !Ref with "references"
 
-				var re = /\!Ref\s+\"([^\"]*)\"/gm
+				var re = /\!Ref\s+\"([a-zA-Z0-9]+)\"/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
 					// console.log(
