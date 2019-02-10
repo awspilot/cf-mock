@@ -23,12 +23,12 @@ async.waterfall([
 			if (request.headers.origin) {
 				response.setHeader('Access-Control-Allow-Origin', '*')
 
-				if (reqest.method == 'OPTIONS') {
-					if (reqest.headers['access-control-request-headers'])
-						response.setHeader('Access-Control-Allow-Headers', reqest.headers['access-control-request-headers'])
+				if (request.method == 'OPTIONS') {
+					if (request.headers['access-control-request-headers'])
+						response.setHeader('Access-Control-Allow-Headers', request.headers['access-control-request-headers'])
 
-					if (reqest.headers['access-control-request-method'])
-						response.setHeader('Access-Control-Allow-Methods', reqest.headers['access-control-request-method'])
+					if (request.headers['access-control-request-method'])
+						response.setHeader('Access-Control-Allow-Methods', request.headers['access-control-request-method'])
 
 					response.setHeader('Access-Control-Max-Age', 172800)
 					return response.end('')
