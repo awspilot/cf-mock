@@ -298,6 +298,8 @@ async.waterfall([
 				process.exit()
 			}
 
+			console.log("Starting Cloudformation Mock on port ", process.env.PORT || 10001 )
+
 		})
 	},
 ], function(err) {
