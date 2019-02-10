@@ -66,7 +66,7 @@ async.waterfall([
 						endpoint:        process.env.DYNAMODB_ENDPOINT,
 						accessKeyId:     process.env.DYNAMODB_KEY,
 						secretAccessKey: process.env.DYNAMODB_SECRET,
-						region:          region,
+						region:          (process.env.CF_DYNAMODB_REGION_PREFIX || '') + region,
 					})
 				)
 
