@@ -13,6 +13,9 @@ Resources:
         Properties:
             Test1: !Ref "AWS::EC2::Subnet"
             Test2: !Ref "AWS::AccountId"
+            Test3: !Ref AWS::EC2::Subnet
+            Test4: !Ref AWS::AccountId
+
             ProvisionedThroughput:
                 ReadCapacityUnits: !Ref "ReadCapacity"
                 WriteCapacityUnits: !Ref WriteCapacity
