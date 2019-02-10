@@ -18,6 +18,26 @@ module.exports = {
 
 		async.waterfall([
 
+			// check name
+			function( cb ) {
+
+				DynamoDB
+					.table('cloudformation_stacks')
+					.index('name-index')
+					.where('account_id').eq(account_id)
+					.where('name').eq(_POST.StackName)
+					.query(function(err, stacks) {
+						if (err)
+							return cb({ code: '', message: 'Failed'})
+
+						if (stacks.length)
+							return cb({ code: '', message: 'Another stack with the same name exists'})
+
+						cb()
+					})
+			},
+
+
 			// create stack in db
 			function( cb ) {
 				DynamoDB
