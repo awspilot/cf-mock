@@ -7,6 +7,7 @@ module.exports = {
 		var account_id = '000000000000'
 		var stack_id   = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); });
 		var template;
+		var parameters = {}
 
 		form_parameters.extract_param('Parameters', _POST )
 		form_parameters.extract_param('NotificationARNs', _POST )
@@ -56,31 +57,29 @@ module.exports = {
 					})
 			},
 
+			// parse parameters
 			function( cb ) {
-				// will parse json aswell
-				template = yaml.safeLoad( _POST.TemplateBody )
+				try {
+					var temp_template = yaml.safeLoad(
+						_POST.TemplateBody
+							.split('!Ref').join('references')
+					)
+				} catch (e) {
+					return cb({ code: '', message: 'Template failed to parse'})
+				}
 
-				//yml = YAML.parse( _POST.TemplateBody )
-
-				//console.log( "YML", JSON.stringify(template,null,"\t"))
-
-				cb()
-			},
-
-
-			function( cb ) {
-				if ( !template.hasOwnProperty('Parameters'))
+				if ( !temp_template.hasOwnProperty('Parameters'))
 					return cb()
 
-				if (typeof template.Parameters !== 'object' )
+				if (typeof temp_template.Parameters !== 'object' )
 					return cb()
 
-				async.each(Object.keys(template.Parameters), function( p, cb) {
+				async.each(Object.keys(temp_template.Parameters), function( p, cb) {
 					// @todo: add default value
 
 					var value = null
-					if ( template.Parameters[p].hasOwnProperty('Default') )
-						value = template.Parameters[p].Default;
+					if ( temp_template.Parameters[p].hasOwnProperty('Default') )
+						value = temp_template.Parameters[p].Default;
 
 					// override parameter values with supplied values
 					_POST.Parameters.map(function(pp) {
@@ -90,8 +89,7 @@ module.exports = {
 						return pp;
 					})
 
-
-
+					parameters[p] = value;
 					DynamoDB
 						.table('cloudformation_parameters')
 						.insert_or_replace({
@@ -103,8 +101,39 @@ module.exports = {
 						})
 				}, function( err ) {
 					cb()
-				} )
+				})
 			},
+
+
+			function( cb ) {
+				// will parse json aswell
+
+				// replace any !Ref with "references"
+
+				var re = /\!Ref\s+\"([^\"]*)\"/gm
+				var refs = null
+				while ( refs = re.exec(_POST.TemplateBody)) {
+					// console.log(
+					// 	JSON.stringify(
+					// 		refs
+					// 	)
+					// )
+					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(parameters[refs[1]])
+				}
+
+				template = yaml.safeLoad( _POST.TemplateBody )
+
+
+
+				//yml = YAML.parse( _POST.TemplateBody )
+
+				//console.log( "YML", JSON.stringify(template,null,"\t"))
+
+				cb()
+			},
+
+
+
 
 
 			// loop resources
