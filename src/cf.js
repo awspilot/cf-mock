@@ -74,6 +74,18 @@ module.exports = {
 						_POST.TemplateBody
 							.split('!Ref').join('references')
 							.split('!GetAtt').join('getattribute')
+							.split('!Base64').join( 'Base64'  )
+							.split('!FindInMap').join( 'FindInMap'  )
+							.split('!GetAZs').join( 'GetAZs'  )
+							.split('!If').join( 'If'  )
+							.split('!Join').join( 'Join'  )
+							.split('!Select').join( 'Select'  )
+							.split('!Sub').join( 'Sub'  )
+
+							.split('!And').join( 'And'  )
+							.split('!Equals').join( 'Equals'  )
+							.split('!Not').join( 'Not'  )
+							.split('!Or').join( 'Or'  )
 					)
 				} catch (e) {
 					return cb({ code: '', message: 'Template failed to parse'})
@@ -176,7 +188,27 @@ module.exports = {
 						Fn::Join
 						Fn::Select
 						Fn::Sub
+
+						Fn::And
+						Fn::Equals
+						Fn::Not
+						Fn::Or
+
 				*/
+
+				_POST.TemplateBody = _POST.TemplateBody
+					.split('!Base64').join( 'unhandled Base64'  )
+					.split('!FindInMap').join( 'unhandled FindInMap'  )
+					.split('!GetAZs').join( 'unhandled GetAZs'  )
+					.split('!If').join( 'unhandled If'  )
+					.split('!Join').join( 'unhandled Join'  )
+					.split('!Select').join( 'unhandled Select'  )
+					.split('!Sub').join( 'unhandled Sub'  )
+
+					.split('!And').join( 'unhandled And'  )
+					.split('!Equals').join( 'unhandled Equals'  )
+					.split('!Not').join( 'unhandled Not'  )
+					.split('!Or').join( 'unhandled Or'  )
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )

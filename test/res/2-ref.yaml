@@ -6,6 +6,9 @@ Parameters:
     WriteCapacity:
         Type: String
         Default: 101
+    NewVolume:
+        Type: String
+        Default: my-volume
 Resources:
 
     DbUsers:
@@ -16,6 +19,15 @@ Resources:
             Test3: !Ref AWS::EC2::Subnet
             Test4: !Ref AWS::AccountId
             Test5: !GetAtt myELB.DNSName
+            Test6: !Base64 xyz
+            Test7: !FindInMap xyz
+            Test8: !GetAZs xyz
+            Test9: !If xyz
+            Test10: !Join xyz
+            Test11: !Select xyz
+            Test12: !Sub zyz
+            VolumeId:
+                !Ref NewVolume
             ProvisionedThroughput:
                 ReadCapacityUnits: !Ref "ReadCapacity"
                 WriteCapacityUnits: !Ref WriteCapacity
