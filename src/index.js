@@ -5,7 +5,7 @@ async=require('async')
 var AWS = require('aws-sdk')
 Ractive = require('ractive')
 Ractive.DEBUG = false;
-
+var url = require('url');
 const DynamodbFactory = require('@awspilot/dynamodb')
 
 
@@ -20,6 +20,7 @@ async.waterfall([
 
 	function( cb ) {
 		const requestHandler = function(request, response) {
+			console.log( "[cloudformation]", request.method, request.url )
 			if (request.headers.origin) {
 				response.setHeader('Access-Control-Allow-Origin', '*')
 
@@ -50,7 +51,10 @@ async.waterfall([
 			request.on('end', function() {
 
 				var _POST = qs.parse(body)
-				var region = request.url.slice(1)
+				//var region = request.url.slice(1)
+				var region = (url.parse(request.url, true).query || {}).region || 'us-east-1'
+
+console.log("given region = ", region )
 
 				var DynamoDB = new DynamodbFactory(
 					new AWS.DynamoDB({

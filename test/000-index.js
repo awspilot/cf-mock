@@ -1,7 +1,7 @@
 fs  = require('fs')
 AWS = require('aws-sdk')
 var cloudformation = new AWS.CloudFormation({
-	endpoint: 'http://localhost:10001/us-east-2',
+	endpoint: 'http://localhost:10001/?region=us-east-2',
 
 	// region is needed but not used since its normally used to generate the endpoint, but we've already added it to the endpoint
 	region: 'us-east-2',
