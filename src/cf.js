@@ -80,12 +80,19 @@ module.exports = {
 							.split('!If').join( 'If'  )
 							.split('!Join').join( 'Join'  )
 							.split('!Select').join( 'Select'  )
+							.split('!Split').join( 'Split'  )
 							.split('!Sub').join( 'Sub'  )
 
 							.split('!And').join( 'And'  )
 							.split('!Equals').join( 'Equals'  )
 							.split('!Not').join( 'Not'  )
 							.split('!Or').join( 'Or'  )
+
+							.split('!Cidr').join( 'Cidr'  )
+							.split('!ImportValue').join( 'ImportValue'  )
+							.split('!Transform').join( 'Transform'  )
+
+
 					)
 				} catch (e) {
 					return cb({ code: '', message: 'Template failed to parse'})
@@ -126,6 +133,8 @@ module.exports = {
 					cb()
 				})
 			},
+
+			// @todo: validate using https://d201a2mn26r7lk.cloudfront.net/latest/gzip/CloudFormationResourceSpecification.json
 
 
 			function( cb ) {
@@ -187,12 +196,18 @@ module.exports = {
 						Fn::If
 						Fn::Join
 						Fn::Select
+						Fn::Split
 						Fn::Sub
 
 						Fn::And
 						Fn::Equals
 						Fn::Not
 						Fn::Or
+
+						Fn::Cidr
+						Fn::ImportValue
+						Fn::Transform
+
 
 				*/
 
@@ -203,12 +218,17 @@ module.exports = {
 					.split('!If').join( 'unhandled If'  )
 					.split('!Join').join( 'unhandled Join'  )
 					.split('!Select').join( 'unhandled Select'  )
+					.split('!Split').join( 'unhandled Split'  )
 					.split('!Sub').join( 'unhandled Sub'  )
 
 					.split('!And').join( 'unhandled And'  )
 					.split('!Equals').join( 'unhandled Equals'  )
 					.split('!Not').join( 'unhandled Not'  )
 					.split('!Or').join( 'unhandled Or'  )
+
+					.split('!Cidr').join( 'unhandled Cidr'  )
+					.split('!ImportValue').join( 'unhandled ImportValue'  )
+					.split('!Transform').join( 'unhandled Transform'  )
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )
