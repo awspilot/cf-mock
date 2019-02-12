@@ -54,7 +54,6 @@ async.waterfall([
 				//var region = request.url.slice(1)
 				var region = (url.parse(request.url, true).query || {}).region || 'us-east-1'
 
-console.log("given region = ", region )
 
 				var DynamoDB = new DynamodbFactory(
 					new AWS.DynamoDB({
