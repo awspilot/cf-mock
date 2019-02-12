@@ -27,6 +27,17 @@ module.exports = {
 			return "not implemented GetAttribute( "+res+" , "+attr+" )";
 		}
 
+		var resolve_parameter = function( pname ) {
+			var ret = '';
+			if (parameters.hasOwnProperty(pname))
+				ret = parameters[pname];
+
+			if (ret === '')
+				return "''"
+
+			return ret;
+		}
+
 		async.waterfall([
 
 			// check name
@@ -91,8 +102,6 @@ module.exports = {
 							.split('!Cidr').join( 'Cidr'  )
 							.split('!ImportValue').join( 'ImportValue'  )
 							.split('!Transform').join( 'Transform'  )
-
-
 					)
 				} catch (e) {
 					return cb({ code: '', message: 'Template failed to parse'})
@@ -140,13 +149,14 @@ module.exports = {
 			function( cb ) {
 				// will parse json aswell
 
-
+				// !Ref "XXX:YYY:ZZZ"
 				var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
 				}
 
+				// !Ref "AWS::Region"
 				var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
@@ -154,30 +164,32 @@ module.exports = {
 				}
 
 
-
+				// !Ref XXX:YYY:ZZZ
 				var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
 				}
 
+				// !Ref AWS::Region
 				var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] )  )
 				}
 
-
+				// !Ref "XXX"
 				var re = /\!Ref\s+\"([a-zA-Z0-9]+)\"/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(parameters[refs[1]])
+					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(resolve_parameter(refs[1]))
 				}
 
+				// !Ref XXX
 				var re = /\!Ref\s+([a-zA-Z0-9]+)$/gm
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(parameters[refs[1]])
+					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(resolve_parameter(refs[1]))
 				}
 
 
@@ -229,13 +241,13 @@ module.exports = {
 					.split('!Cidr').join( 'unhandled Cidr'  )
 					.split('!ImportValue').join( 'unhandled ImportValue'  )
 					.split('!Transform').join( 'unhandled Transform'  )
+					;
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )
 				} catch (e) {
 
 				}
-
 
 				//yml = YAML.parse( _POST.TemplateBody )
 
