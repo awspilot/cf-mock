@@ -24,19 +24,32 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 		// actually create the table
 		function( cb ) {
 
+			// temp hack because DynamoDB-local does not support BillingMode=PAY_PER_REQUEST
+
+			if ( properties.BillingMode === 'PAY_PER_REQUEST' ) {
+				properties.ProvisionedThroughput = { ReadCapacityUnits: 1, WriteCapacityUnits: 1 }
+				if (Array.isArray(properties.GlobalSecondaryIndexes))
+					properties.GlobalSecondaryIndexes = properties.GlobalSecondaryIndexes.map(function(gsi) {
+						gsi.ProvisionedThroughput = { ReadCapacityUnits: 1, WriteCapacityUnits: 1 }
+						return gsi;
+					})
+			}
+
+
 			ClientsDynamoDB.client.createTable({
 				TableName: properties.TableName,
 				AttributeDefinitions: properties.AttributeDefinitions,
 				KeySchema: properties.KeySchema,
 				ProvisionedThroughput: properties.ProvisionedThroughput,
 				GlobalSecondaryIndexes: properties.GlobalSecondaryIndexes,
+				LocalSecondaryIndexes: properties.LocalSecondaryIndexes,
 			}, function(err) {
 				if (err) console.log(err)
 				cb(err)
 			})
 		},
-		//
-		//
+
+
 		// // update status for resource to complete
 		// function( cb ) {
 		// 	cb()
