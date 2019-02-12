@@ -80,33 +80,43 @@ module.exports = {
 
 			// parse parameters
 			function( cb ) {
+
+				var template_to_process = _POST.TemplateBody
+
+				// !Sub \n ( with parameters on the next line )
+				var re = /\!Sub\s?$/gm
+				var refs = null
+				while ( refs = re.exec(template_to_process)) {
+					template_to_process =template_to_process.split(refs[0]).join('')
+				}
+
+				template_to_process = template_to_process
+					.split('!Ref').join('references')
+					.split('!GetAtt').join('getattribute')
+					.split('!Base64').join( 'Base64'  )
+					.split('!FindInMap').join( 'FindInMap'  )
+					.split('!GetAZs').join( 'GetAZs'  )
+					.split('!If').join( 'If'  )
+					.split('!Join').join( 'Join'  )
+					.split('!Select').join( 'Select'  )
+					.split('!Split').join( 'Split'  )
+					.split('!Sub').join( 'Sub'  )
+
+					.split('!And').join( 'And'  )
+					.split('!Equals').join( 'Equals'  )
+					.split('!Not').join( 'Not'  )
+					.split('!Or').join( 'Or'  )
+
+					.split('!Cidr').join( 'Cidr'  )
+					.split('!ImportValue').join( 'ImportValue'  )
+					.split('!Transform').join( 'Transform'  )
+					;
+
 				try {
-					var temp_template = yaml.safeLoad(
-						_POST.TemplateBody
-							.split('!Ref').join('references')
-							.split('!GetAtt').join('getattribute')
-							.split('!Base64').join( 'Base64'  )
-							.split('!FindInMap').join( 'FindInMap'  )
-							.split('!GetAZs').join( 'GetAZs'  )
-							.split('!If').join( 'If'  )
-							.split('!Join').join( 'Join'  )
-							.split('!Select').join( 'Select'  )
-							.split('!Split').join( 'Split'  )
-							.split('!Sub').join( 'Sub'  )
-
-							.split('!And').join( 'And'  )
-							.split('!Equals').join( 'Equals'  )
-							.split('!Not').join( 'Not'  )
-							.split('!Or').join( 'Or'  )
-
-							.split('!Cidr').join( 'Cidr'  )
-							.split('!ImportValue').join( 'ImportValue'  )
-							.split('!Transform').join( 'Transform'  )
-					)
+					var temp_template = yaml.safeLoad(template_to_process)
 				} catch (e) {
 					return cb({ code: '', message: 'Template failed to parse'})
 				}
-
 				if ( !temp_template.hasOwnProperty('Parameters'))
 					return cb()
 
@@ -222,6 +232,14 @@ module.exports = {
 
 
 				*/
+
+				// !Sub \n ( with parameters on the next line )
+				var re = /\!Sub\s?$/gm
+				var refs = null
+				while ( refs = re.exec(_POST.TemplateBody)) {
+					_POST.TemplateBody =_POST.TemplateBody.split(refs[0]).join('')
+				}
+
 
 				_POST.TemplateBody = _POST.TemplateBody
 					.split('!Base64').join( 'unhandled Base64'  )
