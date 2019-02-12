@@ -7,6 +7,7 @@ Ractive = require('ractive')
 Ractive.DEBUG = false;
 var url = require('url');
 const DynamodbFactory = require('@awspilot/dynamodb')
+DynamodbFactory.config( {empty_string_replace_as: "\0" } );
 
 
 
