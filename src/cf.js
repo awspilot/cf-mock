@@ -460,7 +460,7 @@ module.exports = {
 		// CREATE_IN_PROGRESS | CREATE_FAILED | CREATE_COMPLETE | ROLLBACK_IN_PROGRESS | ROLLBACK_FAILED | ROLLBACK_COMPLETE | DELETE_IN_PROGRESS | DELETE_FAILED | DELETE_COMPLETE | UPDATE_IN_PROGRESS | UPDATE_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_COMPLETE | UPDATE_ROLLBACK_IN_PROGRESS | UPDATE_ROLLBACK_FAILED | UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_ROLLBACK_COMPLETE | REVIEW_IN_PROGRESS
 
 		// todo:  <CreationTime>2018-10-27T11:35:09.909Z</CreationTime>
-		ractive = new Ractive({
+		var ractive = new Ractive({
 			template: `
 			  <ListStacksResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
 				<ListStacksResult>
@@ -514,6 +514,65 @@ module.exports = {
 		})
 
 
+
+	},
+
+
+	/* { Action: 'GetTemplateSummary', TemplateBody: 'STRING', Version: '2010-05-15' } */
+	GetTemplateSummary: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+
+		var ractive = new Ractive({
+			template: `
+				<GetTemplateSummaryResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+					<Version>2010-09-09</Version>
+					<GetTemplateSummaryResult>
+						<ResourceTypes>
+							{{#resource_types}}
+								<member>{{ . }}</member>
+							{{/resource_types}}
+						</ResourceTypes>
+						<Metadata></Metadata>
+
+						{{!
+							<Capabilities>
+								<member>CAPABILITY_IAM</member>
+							</Capabilities>
+							<CapabilitiesReason>The following resource(s) require capabilities: [AWS::IAM::Role]</CapabilitiesReason>
+						}}
+
+
+						<Parameters>
+							{{#parameters}}
+							<member>
+								<ParameterType>{{.ParameterType}}</ParameterType>
+								<ParameterConstraints/>
+								<NoEcho>{{.NoEcho}}</NoEcho>
+								<ParameterKey>{{.ParameterKey}}</ParameterKey>
+							</member>
+							{{/parameters}}
+						</Parameters>
+					</GetTemplateSummaryResult>
+					<ResponseMetadata>
+						<RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+					</ResponseMetadata>
+				</GetTemplateSummaryResponse>
+			`,
+			data: {
+				resource_types: [
+					// 'AWS::DynamoDB::Table'
+				],
+				parameters: [
+					// {
+					// 	ParameterType: 'String',
+					// 	//ParameterConstraints
+					// 	NoEcho: 'false',
+					// 	ParameterKey: 'test'
+					// }
+				]
+			}
+		});
+
+		cb(null, ractive.toHTML())
 
 	},
 }
