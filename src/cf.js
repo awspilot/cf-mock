@@ -521,6 +521,50 @@ module.exports = {
 	/* { Action: 'GetTemplateSummary', TemplateBody: 'STRING', Version: '2010-05-15' } */
 	GetTemplateSummary: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
 
+		var template_to_process = _POST.TemplateBody
+
+		// !Sub \n ( with parameters on the next line )
+		var re = /\!Sub\s?$/gm
+		var refs = null
+		while ( refs = re.exec(template_to_process)) {
+			template_to_process =template_to_process.split(refs[0]).join('')
+		}
+
+		template_to_process = template_to_process
+			.split('!Ref').join('references')
+			.split('!GetAtt').join('getattribute')
+			.split('!Base64').join( 'Base64'  )
+			.split('!FindInMap').join( 'FindInMap'  )
+			.split('!GetAZs').join( 'GetAZs'  )
+			.split('!If').join( 'If'  )
+			.split('!Join').join( 'Join'  )
+			.split('!Select').join( 'Select'  )
+			.split('!Split').join( 'Split'  )
+			.split('!Sub').join( 'Sub'  )
+
+			.split('!And').join( 'And'  )
+			.split('!Equals').join( 'Equals'  )
+			.split('!Not').join( 'Not'  )
+			.split('!Or').join( 'Or'  )
+
+			.split('!Cidr').join( 'Cidr'  )
+			.split('!ImportValue').join( 'ImportValue'  )
+			.split('!Transform').join( 'Transform'  )
+			;
+
+		try {
+			var temp_template = yaml.safeLoad(template_to_process)
+		} catch (e) {
+			return cb({ code: '', message: 'Template failed to parse'})
+		}
+
+		if ( !temp_template.hasOwnProperty('Parameters'))
+			return cb()
+
+
+
+
+
 		var ractive = new Ractive({
 			template: `
 				<GetTemplateSummaryResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
@@ -558,17 +602,21 @@ module.exports = {
 				</GetTemplateSummaryResponse>
 			`,
 			data: {
-				resource_types: [
-					// 'AWS::DynamoDB::Table'
-				],
-				parameters: [
-					// {
-					// 	ParameterType: 'String',
-					// 	//ParameterConstraints
-					// 	NoEcho: 'false',
-					// 	ParameterKey: 'test'
-					// }
-				]
+				resource_types: temp_template.hasOwnProperty('Resources') ?
+				Object.keys(temp_template.Resources).map(function(r) {
+					return temp_template.Resources[r].Type
+				})
+				:
+				[],
+				parameters: temp_template.hasOwnProperty('Parameters') ?
+				Object.keys(temp_template.Parameters).map(function(pk) {
+					return {
+						ParameterKey: pk,
+						ParameterType: temp_template.Parameters[pk].Type,
+					}
+				})
+				:
+				[],
 			}
 		});
 
