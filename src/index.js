@@ -274,14 +274,22 @@ async.waterfall([
 									TableName: "cloudformation_bodies",
 									AttributeDefinitions: [
 										{
+											AttributeName: "account_id",
+											AttributeType: "S"
+										},
+										{
 											AttributeName: "stack_id",
 											AttributeType: "S"
 										},
 									],
 									KeySchema: [
 										{
-											AttributeName: "stack_id",
+											AttributeName: "account_id",
 											KeyType: "HASH"
+										},
+										{
+											AttributeName: "stack_id",
+											KeyType: "RANGE"
 										},
 									],
 									ProvisionedThroughput: {
