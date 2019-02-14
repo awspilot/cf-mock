@@ -257,6 +257,58 @@ async.waterfall([
 						})
 					},
 
+
+
+					// create table cloudformation_bodies if needed
+					function( cb ){
+						DynamoDB.client.describeTable({TableName: 'cloudformation_bodies'}, function(err, data) {
+							if (!err) {
+
+								return cb()
+							}
+
+
+							if ( err.code === 'ResourceNotFoundException') {
+								// create the table
+								DynamoDB.client.createTable({
+									TableName: "cloudformation_bodies",
+									AttributeDefinitions: [
+										{
+											AttributeName: "stack_id",
+											AttributeType: "S"
+										},
+									],
+									KeySchema: [
+										{
+											AttributeName: "stack_id",
+											KeyType: "HASH"
+										},
+									],
+									ProvisionedThroughput: {
+										ReadCapacityUnits: 5,
+										WriteCapacityUnits: 5
+									},
+								}, function(err,data) {
+									if (err) {
+										return cb(err)
+									}
+
+
+									cb()
+								})
+								return
+							} else {
+								throw err
+							}
+
+						})
+					},
+
+
+
+
+
+
 				], function() {
 
 					cf[_POST.Action](_POST,DynamoDB,ClientsDynamoDB, region,function(err,data) {
