@@ -623,4 +623,64 @@ module.exports = {
 		cb(null, ractive.toHTML())
 
 	},
+
+	GetTemplate: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+
+
+		var account_id = '000000000000'
+
+		var stack;
+		async.waterfall([
+
+			// create stack in db
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_stacks')
+					.index('name-index')
+					.where('account_id').eq(account_id)
+					.where('name').eq(_POST.StackName)
+					.query(function(err,dbstacks) {
+						if (err)
+							return cb(err)
+
+						if (!dbstacks.length)
+							return cb({err: 'STACK_NOT_FOUND'})
+
+						stack=dbstacks[0];
+						cb()
+					})
+			},
+
+
+
+		], function(err) {
+			if (err)
+				return cb(err)
+
+			cb(null, `
+				<GetTemplateResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+				  <GetTemplateResult>
+				    <TemplateBody>
+				</TemplateBody>
+				    <StagesAvailable>
+				      <member>Original</member>
+				      <member>Processed</member>
+				    </StagesAvailable>
+				  </GetTemplateResult>
+				  <ResponseMetadata>
+				    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+				  </ResponseMetadata>
+				</GetTemplateResponse>
+			`)
+		})
+
+/*
+
+*/
+	},
+
+
+
+
+
 }
