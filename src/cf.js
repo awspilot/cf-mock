@@ -78,6 +78,23 @@ module.exports = {
 					})
 			},
 
+			// save template body
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_bodies')
+					.insert_or_replace({
+						account_id: account_id,
+						stack_id: stack_id,
+						body: _POST.TemplateBody.substring(0, 1024*399 ),
+						created_at: new Date().getTime(),
+					}, function(err,data) {
+						if (err)
+							return cb(err)
+
+						cb()
+					})
+			},
+
 			// parse parameters
 			function( cb ) {
 
@@ -358,7 +375,7 @@ module.exports = {
 		var stack;
 		async.waterfall([
 
-			// create stack in db
+			// get stack from db
 			function( cb ) {
 				DynamoDB
 					.table('cloudformation_stacks')
@@ -425,6 +442,19 @@ module.exports = {
 
 					})
 
+			},
+
+
+
+
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_bodies')
+					.where('account_id').eq(account_id)
+					.where('stack_id').eq(stack.stack_id)
+					.delete(function(err) {
+						cb(err)
+					})
 			},
 
 
@@ -630,9 +660,10 @@ module.exports = {
 		var account_id = '000000000000'
 
 		var stack;
+		var body;
 		async.waterfall([
 
-			// create stack in db
+			// get stack from db
 			function( cb ) {
 				DynamoDB
 					.table('cloudformation_stacks')
@@ -651,6 +682,22 @@ module.exports = {
 					})
 			},
 
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_bodies')
+					.where('account_id').eq(account_id)
+					.where('stack_id').eq(stack.stack_id)
+					.get(function(err,dbbody) {
+						if (err)
+							return cb(err)
+
+						if (!Object.keys(dbbody).length)
+							return cb()
+
+						body=dbbody.body;
+						cb()
+					})
+			},
 
 
 		], function(err) {
@@ -659,24 +706,20 @@ module.exports = {
 
 			cb(null, `
 				<GetTemplateResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
-				  <GetTemplateResult>
-				    <TemplateBody>
-				</TemplateBody>
-				    <StagesAvailable>
-				      <member>Original</member>
-				      <member>Processed</member>
-				    </StagesAvailable>
-				  </GetTemplateResult>
-				  <ResponseMetadata>
-				    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
-				  </ResponseMetadata>
+					<GetTemplateResult>
+						<TemplateBody>` + body.split("<").join("&lt;").split(">").join("&gt;").split('"').join("&#34;").split("'").join("&#39;") + `
+						</TemplateBody>
+						<StagesAvailable>
+							<member>Original</member>
+							<member>Processed</member>
+						</StagesAvailable>
+					</GetTemplateResult>
+					<ResponseMetadata>
+						<RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+					</ResponseMetadata>
 				</GetTemplateResponse>
 			`)
 		})
-
-/*
-
-*/
 	},
 
 
