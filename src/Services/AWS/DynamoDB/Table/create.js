@@ -35,6 +35,13 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 					})
 			}
 
+			if (properties.hasOwnProperty('StreamSpecification')) {
+				if (typeof properties.StreamSpecification === "object") {
+					if (typeof properties.StreamSpecification.StreamEnabled === "string") {
+						properties.StreamSpecification.StreamEnabled = properties.StreamSpecification.StreamEnabled.toLowerCase() === "true" ? true : false
+					}
+				}
+			}
 
 			ClientsDynamoDB.client.createTable({
 				TableName: properties.TableName,
