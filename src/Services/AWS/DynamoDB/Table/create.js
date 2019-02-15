@@ -39,6 +39,9 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 				if (typeof properties.StreamSpecification === "object") {
 					if (typeof properties.StreamSpecification.StreamEnabled === "string") {
 						properties.StreamSpecification.StreamEnabled = properties.StreamSpecification.StreamEnabled.toLowerCase() === "true" ? true : false
+					} else {
+						if (properties.StreamSpecification.hasOwnProperty('StreamViewType')) 
+							properties.StreamSpecification.StreamEnabled = true
 					}
 				}
 			}
