@@ -43,6 +43,7 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 				ProvisionedThroughput: properties.ProvisionedThroughput,
 				GlobalSecondaryIndexes: properties.GlobalSecondaryIndexes,
 				LocalSecondaryIndexes: properties.LocalSecondaryIndexes,
+				StreamSpecification: properties.StreamSpecification,
 			}, function(err) {
 				if (err) console.log(err)
 				cb(err)
