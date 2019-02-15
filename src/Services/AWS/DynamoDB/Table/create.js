@@ -58,7 +58,7 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 				TableName: properties.TableName,
 				TimeToLiveSpecification: properties.TimeToLiveSpecification
 			};
-			dynamodb.updateTimeToLive(params, function(err, data) {
+			ClientsDynamoDB.client.updateTimeToLive(params, function(err, data) {
 				cb()
 			});
 		},
