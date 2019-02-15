@@ -92,6 +92,11 @@ Resources:
             TimeToLiveSpecification:
                 AttributeName: expire_at
                 Enabled: true
+            StreamSpecification:
+                StreamEnabled: true,
+                StreamViewType: NEW_AND_OLD_IMAGES
+
+
 
     DbPhotos:
         Type: AWS::DynamoDB::Table
