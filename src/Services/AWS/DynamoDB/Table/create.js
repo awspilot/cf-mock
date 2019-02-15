@@ -49,6 +49,19 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 			})
 		},
 
+		// set TTL, if needed
+		function( cb ) {
+			if (! properties.hasOwnProperty('TimeToLiveSpecification') )
+				return cb()
+
+			var params = {
+				TableName: properties.TableName,
+				TimeToLiveSpecification: properties.TimeToLiveSpecification
+			};
+			dynamodb.updateTimeToLive(params, function(err, data) {
+				cb()
+			});
+		},
 
 		// // update status for resource to complete
 		// function( cb ) {
