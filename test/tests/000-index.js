@@ -18,7 +18,39 @@ describe('init', function () {
 					ParameterValue: 'testdomain.com',
 				},
 			],
-			TemplateBody: fs.readFileSync('./test/res/1.yaml','UTF-8'),
+			TemplateBody: `
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+    OrgName:
+        Type: String
+        Default: My Organisation
+    OrgDomain:
+        Type: String
+Resources:
+
+    DbAlbums:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: albums
+            AttributeDefinitions:
+                -
+                  AttributeName: user_id
+                  AttributeType: S
+
+                - AttributeName: album_id
+                  AttributeType: S
+
+            KeySchema:
+                -
+                  AttributeName: user_id
+                  KeyType: HASH
+                -
+                  AttributeName: album_id
+                  KeyType: RANGE
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+`,
 		};
 		cloudformation.createStack(params, function(err, data) {
 			console.log("CreateStack",err,data)
