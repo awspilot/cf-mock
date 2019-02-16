@@ -21,7 +21,9 @@ async.waterfall([
 
 	function( cb ) {
 		const requestHandler = function(request, response) {
-			console.log( "[cloudformation]", request.method, request.url )
+			if (process.env.CF_LOG_REQUESTS)
+				console.log( "[cloudformation]", request.method, request.url )
+
 			if (request.headers.origin) {
 				response.setHeader('Access-Control-Allow-Origin', '*')
 
