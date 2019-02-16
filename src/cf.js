@@ -620,8 +620,19 @@ module.exports = {
 							<member>
 								<ParameterType>{{.ParameterType}}</ParameterType>
 								<ParameterConstraints/>
+								{{!
+								<ParameterConstraints>
+									<AllowedValues>
+										<member></member>
+										<member></member>
+									</AllowedValues>
+								</ParameterConstraints>
+								}}
 								<NoEcho>{{.NoEcho}}</NoEcho>
 								<ParameterKey>{{.ParameterKey}}</ParameterKey>
+								{{#if .Default }}
+								<DefaultValue>{{.Default}}</DefaultValue>
+								{{/if}}
 							</member>
 							{{/parameters}}
 						</Parameters>
@@ -643,6 +654,7 @@ module.exports = {
 					return {
 						ParameterKey: pk,
 						ParameterType: temp_template.Parameters[pk].Type,
+						Default: temp_template.Parameters[pk].Default,
 					}
 				})
 				:
