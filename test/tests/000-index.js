@@ -56,7 +56,41 @@ describe('init', function () {
 
 		var params = {
 			StackName: 'STRING_VALUE',
-			TemplateBody: fs.readFileSync('./test/res/1.json','UTF-8'),
+			TemplateBody: `
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Resources": {
+	    "DbAlbums": {
+	        "Type": "AWS::DynamoDB::Table",
+	        "Properties": {
+	            "TableName": "albums",
+	            "AttributeDefinitions": [
+	                {
+	                  "AttributeName": "user_id",
+	                  "AttributeType": "S"
+	                },{
+	                  "AttributeName": "album_id",
+	                  "AttributeType": "S"
+					}
+				],
+	            "KeySchema": [
+	                {
+	                  "AttributeName": "user_id",
+	                  "KeyType": "HASH"
+	                },{
+	                  "AttributeName": "album_id",
+	                  "KeyType": "RANGE"
+					}
+				],
+	            "ProvisionedThroughput": {
+	                "ReadCapacityUnits": 1,
+	                "WriteCapacityUnits": 1
+				}
+			}
+		}
+	}
+}
+`,
 		};
 		cloudformation.createStack(params, function(err, data) {
 			console.log("CreateStack",err,data)
