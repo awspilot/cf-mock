@@ -12,14 +12,6 @@ describe('init', function () {
 
 		var params = {
 			StackName: 'STRING_VALUE',
-		  // ClientRequestToken: 'STRING_VALUE',
-		  // DisableRollback: true || false,
-		  // EnableTerminationProtection: true || false,
-			NotificationARNs: [
-				'STRING_VALUE',
-				'STRING_VALUE2',
-			],
-		  // OnFailure: DO_NOTHING | ROLLBACK | DELETE,
 			Parameters: [
 				{
 					ParameterKey: 'OrgDomain',
@@ -27,8 +19,6 @@ describe('init', function () {
 				},
 			],
 			TemplateBody: fs.readFileSync('./test/res/1.yaml','UTF-8'),
-		  // TemplateURL: 'STRING_VALUE',
-		  // TimeoutInMinutes: 0
 		};
 		cloudformation.createStack(params, function(err, data) {
 			console.log("CreateStack",err,data)
@@ -40,11 +30,6 @@ describe('init', function () {
 
 	it('ListStacks', function(done) {
 		var params = {
-		//  NextToken: 'STRING_VALUE',
-		//  StackStatusFilter: [
-		//    CREATE_IN_PROGRESS | CREATE_FAILED | CREATE_COMPLETE | ROLLBACK_IN_PROGRESS | ROLLBACK_FAILED | ROLLBACK_COMPLETE | DELETE_IN_PROGRESS | DELETE_FAILED | DELETE_COMPLETE | UPDATE_IN_PROGRESS | UPDATE_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_COMPLETE | UPDATE_ROLLBACK_IN_PROGRESS | UPDATE_ROLLBACK_FAILED | UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_ROLLBACK_COMPLETE | REVIEW_IN_PROGRESS,
-		//    /* more items */
-		//  ]
 		};
 		cloudformation.listStacks(params, function(err, data) {
 			console.log("ListStacks",err,data)
@@ -57,12 +42,6 @@ describe('init', function () {
 	it('DeleteStack', function(done) {
 		var params = {
 			StackName: 'STRING_VALUE',
-			// ClientRequestToken: 'STRING_VALUE',
-			// RetainResources: [
-			//   'STRING_VALUE',
-			//   /* more items */
-			// ],
-			// RoleARN: 'STRING_VALUE'
 		};
 		cloudformation.deleteStack(params, function(err, data) {
 			console.log("deleteStack",err,data)
@@ -89,12 +68,6 @@ describe('init', function () {
 	it('DeleteStack', function(done) {
 		var params = {
 			StackName: 'STRING_VALUE',
-			// ClientRequestToken: 'STRING_VALUE',
-			// RetainResources: [
-			//   'STRING_VALUE',
-			//   /* more items */
-			// ],
-			// RoleARN: 'STRING_VALUE'
 		};
 		cloudformation.deleteStack(params, function(err, data) {
 			console.log("deleteStack",err,data)
