@@ -24,8 +24,7 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 		// actually create the table
 		function( cb ) {
 
-			// temp hack because DynamoDB-local does not support BillingMode=PAY_PER_REQUEST
-
+			// apparently we still need this hack as aws-sdk expects ProvisionedThroughput for BillingMode=PAY_PER_REQUEST
 			if ( properties.BillingMode === 'PAY_PER_REQUEST' ) {
 				properties.ProvisionedThroughput = { ReadCapacityUnits: 1, WriteCapacityUnits: 1 }
 				if (Array.isArray(properties.GlobalSecondaryIndexes))
@@ -40,7 +39,7 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 					if (typeof properties.StreamSpecification.StreamEnabled === "string") {
 						properties.StreamSpecification.StreamEnabled = properties.StreamSpecification.StreamEnabled.toLowerCase() === "true" ? true : false
 					} else {
-						if (properties.StreamSpecification.hasOwnProperty('StreamViewType')) 
+						if (properties.StreamSpecification.hasOwnProperty('StreamViewType'))
 							properties.StreamSpecification.StreamEnabled = true
 					}
 				}
@@ -50,6 +49,7 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 				TableName: properties.TableName,
 				AttributeDefinitions: properties.AttributeDefinitions,
 				KeySchema: properties.KeySchema,
+				BillingMode: properties.BillingMode,
 				ProvisionedThroughput: properties.ProvisionedThroughput,
 				GlobalSecondaryIndexes: properties.GlobalSecondaryIndexes,
 				LocalSecondaryIndexes: properties.LocalSecondaryIndexes,
