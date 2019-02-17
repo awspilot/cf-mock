@@ -40,10 +40,8 @@ Resources:
 	it('ListStackResources', function(done) {
 		cloudformation.listStackResources({ StackName: 'STRING_VALUE', }, function(err, data) {
 
-			console.log(err,data)
-
-			//if (err)
-			//	throw err;
+			if (err)
+				throw err;
 			done()
 		});
 	})
