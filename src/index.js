@@ -321,6 +321,20 @@ async.waterfall([
 
 				], function() {
 
+					if (!cf.hasOwnProperty(_POST.Action)) {
+						response.statusCode = 403
+						return response.end(`
+							<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+							  <Error>
+							    <Type>Sender</Type>
+							    <Code>NOT_IMPLEMENTED</Code>
+							    <Message>Not Implemented: ` + _POST.Action + `</Message>
+							  </Error>
+							  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+							</ErrorResponse>
+						`)
+					}
+
 					cf[_POST.Action](_POST,DynamoDB,ClientsDynamoDB, region,function(err,data) {
 						//response.setHeader('Content-Type', 'application/x-www-form-urlencoded' )
 						response.setHeader('Content-Type', 'application/xml');
