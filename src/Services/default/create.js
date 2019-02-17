@@ -7,7 +7,11 @@ module.exports = function(DynamoDB, ClientsDynamoDB ,stack_id, res_name, type, p
 		.insert_or_replace({
 			stack_id: stack_id,
 			resource_name: res_name,
-			type: type + ' ( Decoy )',
-			properties: properties
+			type: type,
+			properties: properties,
+			created_at: new Date().getTime(),
+			updated_at: new Date().getTime(),
+			phisical_id: 'decoy',
+			status: 'CREATE_COMPLETE',
 		}, cb )
 }

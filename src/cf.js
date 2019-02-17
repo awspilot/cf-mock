@@ -836,6 +836,87 @@ module.exports = {
 	},
 
 
+	ListStackResources: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+
+
+		var account_id = '000000000000'
+
+		var stack;
+		var resources;
+
+		async.waterfall([
+
+			// get stack from db
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_stacks')
+					.index('name-index')
+					.where('account_id').eq(account_id)
+					.where('name').eq(_POST.StackName)
+					.query(function(err,dbstacks) {
+						if (err)
+							return cb(err)
+
+						if (!dbstacks.length)
+							return cb({errorCode: 'STACK_NOT_FOUND'})
+
+						stack=dbstacks[0];
+						cb()
+					})
+			},
+
+			function(cb) {
+				DynamoDB
+					.table('cloudformation_resources')
+					.where('stack_id').eq(stack.stack_id)
+					.query(function(err,dbresources) {
+						if (err)
+							return cb(err)
+
+						resources = dbresources;
+						cb()
+					})
+			},
+
+		], function(err) {
+			if (err)
+				return cb(err)
+
+			var ractive = new Ractive({
+				template: `
+					<ListStackResourcesResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+					  <ListStackResourcesResult>
+					    <StackResourceSummaries>
+							{{#resources}}
+					      <member>
+					        <LastUpdatedTimestamp>{{ .updated_at }}</LastUpdatedTimestamp>
+					        <PhysicalResourceId>{{.phisical_id}}</PhysicalResourceId>
+					        <ResourceStatus>{{.status}}</ResourceStatus>
+					        <DriftInformation>
+					          <StackResourceDriftStatus>NOT_CHECKED</StackResourceDriftStatus>
+					        </DriftInformation>
+					        <LogicalResourceId>{{.resource_name}}</LogicalResourceId>
+					        <ResourceType>{{.type}}</ResourceType>
+					      </member>
+							{{/resources}}
+					    </StackResourceSummaries>
+					  </ListStackResourcesResult>
+					  <ResponseMetadata>
+					    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+					  </ResponseMetadata>
+					</ListStackResourcesResponse>
+
+				`,
+				data: {
+					resources: resources
+				}
+			});
+
+			cb(null, ractive.toHTML())
+
+
+		})
+	},
 
 
 }

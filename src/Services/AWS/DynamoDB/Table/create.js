@@ -17,7 +17,7 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 					created_at: new Date().getTime(),
 					updated_at: new Date().getTime(),
 					phisical_id: properties.TableName,
-					// status in progress
+					status: 'CREATE_IN_PROGRESS',
 				}, function(err) {
 					cb(err)
 				} )
@@ -77,10 +77,18 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 			});
 		},
 
-		// // update status for resource to complete
-		// function( cb ) {
-		// 	cb()
-		// },
+		// update status for resource to complete
+		function( cb ) {
+		DynamoDB
+			.table('cloudformation_resources')
+			.where('stack_id').eq(stack_id)
+			.where('resource_name').eq(res_name)
+			.update({
+				status: 'CREATE_COMPLETE',
+			}, function(err) {
+				cb(err)
+			} )
+		},
 
 	], function(err) {
 		cb(err)
