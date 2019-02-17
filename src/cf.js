@@ -820,7 +820,7 @@ module.exports = {
 					    </Stacks>
 					  </DescribeStacksResult>
 					  <ResponseMetadata>
-					    <RequestId>7e9e36f1-3293-11e9-82c5-b9bd9b6b9ff2</RequestId>
+					    <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
 					  </ResponseMetadata>
 					</DescribeStacksResponse>
 				`,
