@@ -348,8 +348,8 @@ async.waterfall([
 								<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
 								  <Error>
 								    <Type>Sender</Type>
-								    <Code>` + err.code + `</Code>
-								    <Message>` + err.message + `</Message>
+								    <Code>` + err.errorCode + `</Code>
+								    <Message>` + err.errorMessage + `</Message>
 								  </Error>
 								  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
 								</ErrorResponse>

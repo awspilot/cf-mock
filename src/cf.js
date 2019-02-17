@@ -738,4 +738,104 @@ module.exports = {
 
 
 
+	DescribeStacks: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+
+
+		var account_id = '000000000000'
+
+		var stack;
+		var parameters;
+
+		async.waterfall([
+
+			// get stack from db
+			function( cb ) {
+				DynamoDB
+					.table('cloudformation_stacks')
+					.index('name-index')
+					.where('account_id').eq(account_id)
+					.where('name').eq(_POST.StackName)
+					.query(function(err,dbstacks) {
+						if (err)
+							return cb(err)
+
+						if (!dbstacks.length)
+							return cb({errorCode: 'STACK_NOT_FOUND'})
+
+						stack=dbstacks[0];
+						cb()
+					})
+			},
+
+			function(cb) {
+				DynamoDB
+					.table('cloudformation_parameters')
+					.where('stack_id').eq(stack.stack_id)
+					.query(function(err,dbparams) {
+						if (err)
+							return cb(err)
+
+						parameters = dbparams;
+						cb()
+					})
+			},
+
+		], function(err) {
+			if (err)
+				return cb(err)
+
+
+			var ractive = new Ractive({
+				template: `
+					<DescribeStacksResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
+					  <DescribeStacksResult>
+					    <Stacks>
+					      <member>
+					        <Capabilities>
+					          <member>CAPABILITY_IAM</member>
+					        </Capabilities>
+					        <CreationTime>` + (new Date(stack.created_at).toISOString()) + `</CreationTime>
+					        <NotificationARNs/>
+							<StackId>arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + stack.name + `/` + stack.stack_id + `</StackId>
+					        <StackName>` + stack.name + `</StackName>
+					        <StackStatus>` + stack.status + `</StackStatus>
+					        <DisableRollback>false</DisableRollback>
+					        <Tags/>
+					        <RollbackConfiguration>
+					          <RollbackTriggers/>
+					        </RollbackConfiguration>
+					        <DriftInformation>
+					          <StackDriftStatus>NOT_CHECKED</StackDriftStatus>
+					        </DriftInformation>
+					        <EnableTerminationProtection>false</EnableTerminationProtection>
+					        <Parameters>
+								{{#parameters}}
+									<member>
+										<ParameterKey>{{.key}}</ParameterKey>
+										<ParameterValue>{{.value}}</ParameterValue>
+									</member>
+								{{/parameters}}
+					        </Parameters>
+					      </member>
+					    </Stacks>
+					  </DescribeStacksResult>
+					  <ResponseMetadata>
+					    <RequestId>7e9e36f1-3293-11e9-82c5-b9bd9b6b9ff2</RequestId>
+					  </ResponseMetadata>
+					</DescribeStacksResponse>
+				`,
+				data: {
+					parameters: parameters
+				}
+			});
+
+			cb(null, ractive.toHTML())
+
+
+		})
+	},
+
+
+
+
 }
