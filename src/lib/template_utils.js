@@ -17,6 +17,13 @@ module.exports = {
 			if (refs[1] + '::' + refs[2] === 'AWS::Partition')
 				TemplateBody = TemplateBody.split(refs[0]).join( 'aws' )
 
+			if (refs[1] + '::' + refs[2] === 'AWS::StackName')
+				TemplateBody = TemplateBody.split(refs[0]).join( params.stack_name )
+
+			if (refs[1] + '::' + refs[2] === 'AWS::StackId')
+				TemplateBody = TemplateBody.split(refs[0]).join( params.stack_id )
+
+
 		}
 
 		var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
@@ -32,6 +39,24 @@ module.exports = {
 			if (refs[1] + '::' + refs[2] === 'AWS::Partition')
 				TemplateBody = TemplateBody.split(refs[0]).join( 'aws' )
 
+			if (refs[1] + '::' + refs[2] === 'AWS::StackName')
+				TemplateBody = TemplateBody.split(refs[0]).join( params.stack_name )
+
+			if (refs[1] + '::' + refs[2] === 'AWS::StackId')
+				TemplateBody = TemplateBody.split(refs[0]).join( params.stack_id )
+
+		}
+
+
+		var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
+		var refs = null
+		while ( refs = re.exec(TemplateBody)) {
+			TemplateBody = TemplateBody.split(refs[0]).join( 'unhandled' )
+		}
+		var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
+		var refs = null
+		while ( refs = re.exec(TemplateBody)) {
+			TemplateBody = TemplateBody.split(refs[0]).join( 'unhandled' )
 		}
 
 		return TemplateBody
@@ -40,10 +65,8 @@ module.exports = {
 
 
 /*
-AWS::URLSuffix
-AWS::StackName
-AWS::StackId: arn:aws:cloudformation:us-west-2:123456789012:stack/teststack/51af3dc0-da77-11e4-872e-1234567db123
-AWS::NoValue
-AWS::NotificationARNs
-
+ @todo:
+ AWS::URLSuffix
+ AWS::NoValue
+ AWS::NotificationARNs
 */

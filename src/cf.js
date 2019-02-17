@@ -188,6 +188,8 @@ module.exports = {
 				_POST.TemplateBody = tpl_utils.replace_pseudo_parameters( _POST.TemplateBody, {
 					region:region,
 					account_id: account_id,
+					stack_name: _POST.StackName,
+					stack_id: `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
 				})
 
 
@@ -274,7 +276,7 @@ module.exports = {
 					.split('!Transform').join( 'unhandled Transform'  )
 					;
 
-console.log(_POST.TemplateBody)
+				//console.log(_POST.TemplateBody)
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )
