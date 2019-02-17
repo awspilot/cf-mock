@@ -1,4 +1,4 @@
-describe('!Ref to parameter', function () {
+describe('!Ref to pseudo parameter', function () {
 	it('CreateStack', function(done) {
 
 		var params = {
