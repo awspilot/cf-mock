@@ -1,6 +1,7 @@
 //const YAML = require('yaml')
 var yaml = require('js-yaml')
 
+var tpl_utils = require('./lib/template_utils')
 
 module.exports = {
 	CreateStack: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
@@ -183,12 +184,10 @@ module.exports = {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
 				}
 
-				// !Ref "AWS::Region"
-				var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2])  )
-				}
+				// !Ref "AWS::Region" | AWS::Region
+				_POST.TemplateBody = tpl_utils.replace_pseudo_parameter_region( _POST.TemplateBody, region )
+
+
 
 
 				// !Ref XXX:YYY:ZZZ
@@ -198,12 +197,6 @@ module.exports = {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
 				}
 
-				// !Ref AWS::Region
-				var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] )  )
-				}
 
 				// !Ref "XXX"
 				var re = /\!Ref\s+\"([a-zA-Z0-9]+)\"/gm
@@ -277,6 +270,8 @@ module.exports = {
 					.split('!ImportValue').join( 'unhandled ImportValue'  )
 					.split('!Transform').join( 'unhandled Transform'  )
 					;
+
+console.log(_POST.TemplateBody)
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )
