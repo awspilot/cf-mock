@@ -185,7 +185,10 @@ module.exports = {
 				}
 
 				// !Ref "AWS::Region" | AWS::Region
-				_POST.TemplateBody = tpl_utils.replace_pseudo_parameter_region( _POST.TemplateBody, region )
+				_POST.TemplateBody = tpl_utils.replace_pseudo_parameters( _POST.TemplateBody, {
+					region:region,
+					account_id: account_id,
+				})
 
 
 
