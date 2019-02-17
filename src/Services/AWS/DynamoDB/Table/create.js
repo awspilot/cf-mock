@@ -14,6 +14,9 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 					resource_name: res_name,
 					type: type,
 					properties: properties,
+					created_at: new Date().getTime(),
+					updated_at: new Date().getTime(),
+					phisical_id: properties.TableName,
 					// status in progress
 				}, function(err) {
 					cb(err)
