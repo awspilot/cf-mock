@@ -917,6 +917,8 @@ module.exports = {
 
 		})
 	},
-
+	DescribeStackEvents: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+		return cb({errorCode: 'NOT_IMPLEMENTED'})
+	}
 
 }
