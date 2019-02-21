@@ -51,10 +51,10 @@ module.exports = {
 					.where('name').eq(_POST.StackName)
 					.query(function(err, stacks) {
 						if (err)
-							return cb({ code: '', message: 'Failed'})
+							return cb({ errorCode: '', message: 'Failed'})
 
 						if (stacks.length)
-							return cb({ code: '', message: 'Another stack with the same name exists'})
+							return cb({ errorCode: '', message: 'Another stack with the same name exists'})
 
 						cb()
 					})
@@ -130,12 +130,14 @@ module.exports = {
 					.split('!Transform').join( ''  )
 					;
 
+				//console.log(template_to_process)
 
 
 				try {
 					var temp_template = yaml.safeLoad(template_to_process)
-				} catch (e) {
-					return cb({ code: '', message: 'Template failed to parse'})
+				} catch (err) {
+					console.log(JSON.stringify(err))
+					return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 				}
 				if ( !temp_template.hasOwnProperty('Parameters'))
 					return cb()
@@ -212,12 +214,8 @@ module.exports = {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(resolve_parameter(refs[1]))
 				}
 
-				// !Ref XXX
-				var re = /\!Ref\s+([a-zA-Z0-9]+)$/gm
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(resolve_parameter(refs[1]))
-				}
+				_POST.TemplateBody = tpl_utils.replace_parameters( _POST.TemplateBody, parameters)
+
 
 				var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)/g
 				var refs = null
@@ -257,6 +255,7 @@ module.exports = {
 					_POST.TemplateBody =_POST.TemplateBody.split(refs[0]).join('')
 				}
 
+				console.log(_POST.TemplateBody)
 
 				_POST.TemplateBody = _POST.TemplateBody
 					.split('!Base64').join( ''  )
@@ -278,7 +277,7 @@ module.exports = {
 					.split('!Transform').join( ''  )
 					;
 
-				//console.log(_POST.TemplateBody)
+				console.log(_POST.TemplateBody)
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )

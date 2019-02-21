@@ -3,6 +3,35 @@
 
 
 module.exports = {
+	replace_parameters: function( TemplateBody, params ) {
+
+		// !Ref XXX
+		var re = /\!Ref\s+([a-zA-Z0-9]+)/g
+
+		TemplateBody = TemplateBody.split("\n")
+		TemplateBody = TemplateBody.map(function(tb) {
+
+			var findings;
+			do {
+				findings = []
+				var refs = null
+				while ( refs = re.exec(tb)) {
+					findings.push(refs)
+				}
+				findings = Array.from(new Set(findings)) // uniq
+				findings = findings.sort(function(a,b) { return a[0].length > b[0].length ? -1 : 1 })
+				if (findings.length) {
+					tb = tb.split(findings[0][0]).join( params[ findings[0][1] ] || "undefined" )
+				}
+			} while ( findings.length);
+
+
+
+			return tb;
+		})
+		return TemplateBody.join("\n")
+	},
+
 	replace_pseudo_parameters: function( TemplateBody, params ) {
 		var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
 		var refs = null
