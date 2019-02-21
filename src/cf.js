@@ -219,12 +219,12 @@ module.exports = {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(resolve_parameter(refs[1]))
 				}
 
-
-				var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)\s?$/gm
+				var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)/g
 				var refs = null
 				while ( refs = re.exec(_POST.TemplateBody)) {
 					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( get_att(refs[1] ,  refs[2] )  )
 				}
+
 
 
 				/*
@@ -259,23 +259,23 @@ module.exports = {
 
 
 				_POST.TemplateBody = _POST.TemplateBody
-					.split('!Base64').join( 'unhandled Base64'  )
-					.split('!FindInMap').join( 'unhandled FindInMap'  )
-					.split('!GetAZs').join( 'unhandled GetAZs'  )
-					.split('!If').join( 'unhandled If'  )
-					.split('!Join').join( 'unhandled Join'  )
-					.split('!Select').join( 'unhandled Select'  )
-					.split('!Split').join( 'unhandled Split'  )
-					.split('!Sub').join( 'unhandled Sub'  )
+					.split('!Base64').join( ''  )
+					.split('!FindInMap').join( ''  )
+					.split('!GetAZs').join( ''  )
+					.split('!If').join( ''  )
+					.split('!Join').join( ''  )
+					.split('!Select').join( ''  )
+					.split('!Split').join( ''  )
+					.split('!Sub').join( ''  )
 
-					.split('!And').join( 'unhandled And'  )
-					.split('!Equals').join( 'unhandled Equals'  )
-					.split('!Not').join( 'unhandled Not'  )
-					.split('!Or').join( 'unhandled Or'  )
+					.split('!And').join( ''  )
+					.split('!Equals').join( ''  )
+					.split('!Not').join( ''  )
+					.split('!Or').join( ''  )
 
-					.split('!Cidr').join( 'unhandled Cidr'  )
-					.split('!ImportValue').join( 'unhandled ImportValue'  )
-					.split('!Transform').join( 'unhandled Transform'  )
+					.split('!Cidr').join( ''  )
+					.split('!ImportValue').join( ''  )
+					.split('!Transform').join( ''  )
 					;
 
 				//console.log(_POST.TemplateBody)
@@ -283,7 +283,7 @@ module.exports = {
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )
 				} catch (e) {
-
+					console.log("failed",_POST.TemplateBody , e )
 				}
 
 				//yml = YAML.parse( _POST.TemplateBody )
@@ -563,25 +563,25 @@ module.exports = {
 		}
 
 		template_to_process = template_to_process
-			.split('!Ref').join('references')
-			.split('!GetAtt').join('getattribute')
-			.split('!Base64').join( 'Base64'  )
-			.split('!FindInMap').join( 'FindInMap'  )
-			.split('!GetAZs').join( 'GetAZs'  )
-			.split('!If').join( 'If'  )
-			.split('!Join').join( 'Join'  )
-			.split('!Select').join( 'Select'  )
-			.split('!Split').join( 'Split'  )
-			.split('!Sub').join( 'Sub'  )
+			.split('!Ref').join('')
+			.split('!GetAtt').join('')
+			.split('!Base64').join( ''  )
+			.split('!FindInMap').join( ''  )
+			.split('!GetAZs').join( ''  )
+			.split('!If').join( ''  )
+			.split('!Join').join( ''  )
+			.split('!Select').join( ''  )
+			.split('!Split').join( ''  )
+			.split('!Sub').join( ''  )
 
-			.split('!And').join( 'And'  )
-			.split('!Equals').join( 'Equals'  )
-			.split('!Not').join( 'Not'  )
-			.split('!Or').join( 'Or'  )
+			.split('!And').join( ''  )
+			.split('!Equals').join( ''  )
+			.split('!Not').join( ''  )
+			.split('!Or').join( ''  )
 
-			.split('!Cidr').join( 'Cidr'  )
-			.split('!ImportValue').join( 'ImportValue'  )
-			.split('!Transform').join( 'Transform'  )
+			.split('!Cidr').join( ''  )
+			.split('!ImportValue').join( ''  )
+			.split('!Transform').join( ''  )
 			;
 
 		try {
