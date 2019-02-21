@@ -53,7 +53,9 @@ Resources:
 `,
 		};
 		cloudformation.createStack(params, function(err, data) {
-			console.log("CreateStack",err,data)
+			if (err)
+				throw err;
+
 			setTimeout(function() {
 				done()
 			}, 5000)
@@ -64,7 +66,9 @@ Resources:
 		var params = {
 		};
 		cloudformation.listStacks(params, function(err, data) {
-			console.log("ListStacks",err,data)
+			if (err)
+				throw err;
+
 			done()
 		});
 
@@ -76,7 +80,9 @@ Resources:
 			StackName: 'STRING_VALUE',
 		};
 		cloudformation.deleteStack(params, function(err, data) {
-			console.log("deleteStack",err,data)
+			if (err)
+				throw err;
+
 			done()
 		});
 	})
@@ -125,7 +131,9 @@ Resources:
 `,
 		};
 		cloudformation.createStack(params, function(err, data) {
-			console.log("CreateStack",err,data)
+			if (err)
+				throw err;
+
 			setTimeout(function() {
 				done()
 			}, 5000)
@@ -136,7 +144,9 @@ Resources:
 			StackName: 'STRING_VALUE',
 		};
 		cloudformation.deleteStack(params, function(err, data) {
-			console.log("deleteStack",err,data)
+			if (err)
+				throw err;
+
 			done()
 		});
 	})
