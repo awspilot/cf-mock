@@ -109,26 +109,28 @@ module.exports = {
 				}
 
 				template_to_process = template_to_process
-					.split('!Ref').join('references')
-					.split('!GetAtt').join('getattribute')
-					.split('!Base64').join( 'Base64'  )
-					.split('!FindInMap').join( 'FindInMap'  )
-					.split('!GetAZs').join( 'GetAZs'  )
-					.split('!If').join( 'If'  )
-					.split('!Join').join( 'Join'  )
-					.split('!Select').join( 'Select'  )
-					.split('!Split').join( 'Split'  )
-					.split('!Sub').join( 'Sub'  )
+					.split('!Ref').join('')
+					.split('!GetAtt').join('')
+					.split('!Base64').join( ''  )
+					.split('!FindInMap').join( ''  )
+					.split('!GetAZs').join( ''  )
+					.split('!If').join( ''  )
+					.split('!Join').join( ''  )
+					.split('!Select').join( ''  )
+					.split('!Split').join( ''  )
+					.split('!Sub').join( ''  )
 
-					.split('!And').join( 'And'  )
-					.split('!Equals').join( 'Equals'  )
-					.split('!Not').join( 'Not'  )
-					.split('!Or').join( 'Or'  )
+					.split('!And').join( ''  )
+					.split('!Equals').join( ''  )
+					.split('!Not').join( ''  )
+					.split('!Or').join( ''  )
 
-					.split('!Cidr').join( 'Cidr'  )
-					.split('!ImportValue').join( 'ImportValue'  )
-					.split('!Transform').join( 'Transform'  )
+					.split('!Cidr').join( ''  )
+					.split('!ImportValue').join( ''  )
+					.split('!Transform').join( ''  )
 					;
+
+
 
 				try {
 					var temp_template = yaml.safeLoad(template_to_process)
