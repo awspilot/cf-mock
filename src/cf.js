@@ -1,11 +1,12 @@
 //const YAML = require('yaml')
 var yaml = require('js-yaml')
-
 var tpl_utils = require('./lib/template_utils')
+var account_id = '000000000000'
+
 
 module.exports = {
 	CreateStack: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
-		var account_id = '000000000000'
+
 		var stack_id   = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); });
 		var template;
 		var parameters = {}
@@ -371,7 +372,6 @@ module.exports = {
 
 	},
 	DeleteStack: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
-		var account_id = '000000000000'
 
 		var stack;
 		async.waterfall([
@@ -486,7 +486,6 @@ module.exports = {
 		//console.log('DeleteStack', _POST)
 	},
 	ListStacks: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
-		var account_id = '000000000000'
 
 		// CREATE_IN_PROGRESS | CREATE_FAILED | CREATE_COMPLETE | ROLLBACK_IN_PROGRESS | ROLLBACK_FAILED | ROLLBACK_COMPLETE | DELETE_IN_PROGRESS | DELETE_FAILED | DELETE_COMPLETE | UPDATE_IN_PROGRESS | UPDATE_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_COMPLETE | UPDATE_ROLLBACK_IN_PROGRESS | UPDATE_ROLLBACK_FAILED | UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_ROLLBACK_COMPLETE | REVIEW_IN_PROGRESS
 
@@ -549,10 +548,22 @@ module.exports = {
 	},
 
 
-	/* { Action: 'GetTemplateSummary', TemplateBody: 'STRING', Version: '2010-05-15' } */
+
 	GetTemplateSummary: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
 
+
+
+
 		var template_to_process = _POST.TemplateBody
+
+		template_to_process = tpl_utils.replace_pseudo_parameters( template_to_process, {
+			region:region,
+			account_id: account_id,
+			stack_name: 'StackNamePlaceholder',
+			stack_id: 'StackIdPlaceholder'
+		})
+
+		//console.log(template_to_process)
 
 		// !Sub \n ( with parameters on the next line )
 		var re = /\!Sub\s?$/gm
