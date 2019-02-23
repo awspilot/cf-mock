@@ -123,6 +123,32 @@ module.exports = {
 			;
 
 		return TemplateBody;
+	},
+
+	find_unresolved_refs: function(TemplateBody, resolved_refs ) {
+
+		var err = false;
+		var lines = TemplateBody.split("\n").forEach(function(line, line_number ) {
+			if (err)
+				return;
+
+			var re = /\!Ref\s+\"([^\"]*)\"/gm;
+			var refs = null
+			while ( refs = re.exec(line)) {
+				if (resolved_refs.indexOf(refs[1]) === -1 )
+					err = {errorCode: 'UNRESOLVED_PARAMETER', errorMessage: 'Unresolved parameter ' + refs[1] + ' at line ' + line_number }
+			}
+
+			var re = /\!Ref\s+([a-zA-Z0-9]+)/g
+			var refs = null
+			while ( refs = re.exec(line)) {
+				if (resolved_refs.indexOf(refs[1]) === -1 )
+					err = {errorCode: 'UNRESOLVED_PARAMETER', errorMessage: 'Unresolved parameter ' + refs[1] + ' at line ' + line_number }
+			}
+
+
+		})
+		return err;
 	}
 }
 
