@@ -586,15 +586,8 @@ module.exports = {
 		try {
 			var temp_template = yaml.safeLoad(template_to_process)
 		} catch (e) {
-			return cb({ code: '', message: 'Template failed to parse'})
+			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 		}
-
-		if ( !temp_template.hasOwnProperty('Parameters'))
-			return cb()
-
-
-
-
 
 		var ractive = new Ractive({
 			template: `
