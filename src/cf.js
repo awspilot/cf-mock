@@ -183,11 +183,11 @@ module.exports = {
 				// will parse json aswell
 
 				// !Ref "XXX:YYY:ZZZ"
-				var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
-				}
+				// var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
+				// var refs = null
+				// while ( refs = re.exec(_POST.TemplateBody)) {
+				// 	_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
+				// }
 
 				// !Ref "AWS::Region" | AWS::Region
 				_POST.TemplateBody = tpl_utils.replace_pseudo_parameters( _POST.TemplateBody, {
@@ -201,11 +201,11 @@ module.exports = {
 
 
 				// !Ref XXX:YYY:ZZZ
-				var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
-				}
+				// var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
+				// var refs = null
+				// while ( refs = re.exec(_POST.TemplateBody)) {
+				// 	_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
+				// }
 
 
 				// !Ref "XXX"
@@ -553,8 +553,8 @@ module.exports = {
 
 
 		// Step1, replace pseudo parameters
-		var template_to_process = JSON.parse(JSON.stringify(_POST.TemplateBody))
-		template_to_process = tpl_utils.replace_pseudo_parameters( template_to_process, {
+		var TemplateBody = JSON.parse(JSON.stringify(_POST.TemplateBody))
+		TemplateBody = tpl_utils.replace_pseudo_parameters( TemplateBody, {
 			region:region,
 			account_id: account_id,
 			stack_name: 'StackNamePlaceholder',
@@ -562,7 +562,7 @@ module.exports = {
 		})
 
 		// Step2, remove all Cloudformation specific func and try to validate yaml
-		template_to_process = tpl_utils.cleanup_cloudformation_specific(template_to_process)
+		template_to_process = tpl_utils.cleanup_cloudformation_specific(TemplateBody)
 
 		//console.log(template_to_process)
 
@@ -572,8 +572,26 @@ module.exports = {
 			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 		}
 
+		var parameters = []
+		var resources  = []
 
-		//console.log(temp_template.Parameters)
+		if (!temp_template.hasOwnProperty('Resources'))
+			return cb({ errorCode: 'NoResources', errorMessage: 'Template failed to parse: No resources found' })
+
+		if ( typeof temp_template.Resources !== "object")
+			return cb({ errorCode: 'InvalidResources', errorMessage: 'Template failed to parse: Resources is not an object' })
+
+		resources = Object.keys(temp_template.Resources);
+
+		if (temp_template.hasOwnProperty('Parameters') && (typeof temp_template.Parameters === "object" )) {
+			parameters = Object.keys(temp_template.Parameters)
+		}
+
+		var unresolved_err = tpl_utils.find_unresolved_refs(TemplateBody, parameters.concat(resources ) );
+		if ( unresolved_err )
+			return cb(unresolved_err)
+
+
 
 		var ractive = new Ractive({
 			template: `
