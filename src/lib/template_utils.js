@@ -89,6 +89,40 @@ module.exports = {
 		}
 
 		return TemplateBody
+	},
+	cleanup_cloudformation_specific: function( TemplateBody ) {
+
+		// !Sub \n ( with parameters on the next line )
+		var re = /\!Sub\s?$/gm
+		var refs = null
+		while ( refs = re.exec(TemplateBody)) {
+			TemplateBody = TemplateBody.split(refs[0]).join('')
+		}
+
+
+		TemplateBody = TemplateBody
+			.split('!Ref').join('')
+			.split('!GetAtt').join('')
+			.split('!Base64').join( ''  )
+			.split('!FindInMap').join( ''  )
+			.split('!GetAZs').join( ''  )
+			.split('!If').join( ''  )
+			.split('!Join').join( ''  )
+			.split('!Select').join( ''  )
+			.split('!Split').join( ''  )
+			.split('!Sub').join( ''  )
+
+			.split('!And').join( ''  )
+			.split('!Equals').join( ''  )
+			.split('!Not').join( ''  )
+			.split('!Or').join( ''  )
+
+			.split('!Cidr').join( ''  )
+			.split('!ImportValue').join( ''  )
+			.split('!Transform').join( ''  )
+			;
+
+		return TemplateBody;
 	}
 }
 

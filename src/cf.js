@@ -552,10 +552,8 @@ module.exports = {
 	GetTemplateSummary: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
 
 
-
-
-		var template_to_process = _POST.TemplateBody
-
+		// Step1, replace pseudo parameters
+		var template_to_process = JSON.parse(JSON.stringify(_POST.TemplateBody))
 		template_to_process = tpl_utils.replace_pseudo_parameters( template_to_process, {
 			region:region,
 			account_id: account_id,
@@ -563,45 +561,19 @@ module.exports = {
 			stack_id: 'StackIdPlaceholder'
 		})
 
+		// Step2, remove all Cloudformation specific func and try to validate yaml
+		template_to_process = tpl_utils.cleanup_cloudformation_specific(template_to_process)
+
 		//console.log(template_to_process)
-
-		// !Sub \n ( with parameters on the next line )
-		var re = /\!Sub\s?$/gm
-		var refs = null
-		while ( refs = re.exec(template_to_process)) {
-			template_to_process =template_to_process.split(refs[0]).join('')
-		}
-
-		template_to_process = template_to_process
-			.split('!Ref').join('')
-			.split('!GetAtt').join('')
-			.split('!Base64').join( ''  )
-			.split('!FindInMap').join( ''  )
-			.split('!GetAZs').join( ''  )
-			.split('!If').join( ''  )
-			.split('!Join').join( ''  )
-			.split('!Select').join( ''  )
-			.split('!Split').join( ''  )
-			.split('!Sub').join( ''  )
-
-			.split('!And').join( ''  )
-			.split('!Equals').join( ''  )
-			.split('!Not').join( ''  )
-			.split('!Or').join( ''  )
-
-			.split('!Cidr').join( ''  )
-			.split('!ImportValue').join( ''  )
-			.split('!Transform').join( ''  )
-			;
 
 		try {
 			var temp_template = yaml.safeLoad(template_to_process)
-		} catch (e) {
+		} catch (err) {
 			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 		}
 
 
-console.log(temp_template.Parameters)
+		//console.log(temp_template.Parameters)
 
 		var ractive = new Ractive({
 			template: `
