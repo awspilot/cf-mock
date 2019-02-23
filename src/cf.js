@@ -589,6 +589,9 @@ module.exports = {
 			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 		}
 
+
+console.log(temp_template.Parameters)
+
 		var ractive = new Ractive({
 			template: `
 				<GetTemplateSummaryResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
@@ -613,15 +616,18 @@ module.exports = {
 							{{#parameters}}
 							<member>
 								<ParameterType>{{.ParameterType}}</ParameterType>
-								<ParameterConstraints/>
-								{{!
-								<ParameterConstraints>
-									<AllowedValues>
-										<member></member>
-										<member></member>
-									</AllowedValues>
-								</ParameterConstraints>
-								}}
+								{{#if .AllowedValues }}
+									<ParameterConstraints>
+
+										<AllowedValues>
+											{{#.AllowedValues}}
+											<member>{{ . }}</member>
+											{{/.AllowedValues}}
+										</AllowedValues>
+									</ParameterConstraints>
+								{{else}}
+									<ParameterConstraints/>
+								{{/if}}
 								<NoEcho>{{.NoEcho}}</NoEcho>
 								<ParameterKey>{{.ParameterKey}}</ParameterKey>
 								{{#if .Default }}
@@ -645,10 +651,16 @@ module.exports = {
 				[],
 				parameters: temp_template.hasOwnProperty('Parameters') ?
 				Object.keys(temp_template.Parameters).map(function(pk) {
+
+					var AllowedValues = undefined;
+					if (temp_template.Parameters[pk].hasOwnProperty('AllowedValues') && Array.isArray(temp_template.Parameters[pk].AllowedValues))
+						AllowedValues = temp_template.Parameters[pk].AllowedValues;
+
 					return {
 						ParameterKey: pk,
 						ParameterType: temp_template.Parameters[pk].Type,
 						Default: temp_template.Parameters[pk].Default,
+						AllowedValues: AllowedValues,
 					}
 				})
 				:
