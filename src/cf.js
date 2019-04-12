@@ -322,7 +322,7 @@ module.exports = {
 						require(respath)(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					} catch (err) {
 						if (err)
-							console.log(respath, "failed", err )
+							console.log(respath, "failed" )
 						require('./Services/default/create.js')(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					}
 
