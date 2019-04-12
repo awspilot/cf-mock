@@ -19,6 +19,9 @@ module.exports = function(DynamoDB, ClientsDynamoDB, stack_id, res_name, type, p
 		function( cb ) {
 
 			s3.deleteBucket({ Bucket: properties.BucketName }, function(err, data) {
+				if (err && err.code === 'NoSuchBucket')
+					return cb()
+
 				cb(err)
 			});
 
