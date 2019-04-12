@@ -1,8 +1,9 @@
 /*
   S3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
-      AccessControl: PublicRead
+      AccessControl: AuthenticatedRead | AwsExecRead | BucketOwnerRead | BucketOwnerFullControl | LogDeliveryWrite | Private | PublicRead | PublicReadWrite
       BucketName: public-bucket
       MetricsConfigurations:
         - Id: EntireBucket
@@ -16,12 +17,20 @@
           RedirectRule:
             HostName: ec2-11-22-333-44.compute-1.amazonaws.com
             ReplaceKeyPrefixWith: report-404/
-    DeletionPolicy: Retain
 */
 
 
 var AWS = require('aws-sdk')
-
+var AccessControls = {
+	AuthenticatedRead: 'authenticated-read',
+	AwsExecRead: undefined,
+	BucketOwnerRead: undefined,
+	BucketOwnerFullControl: undefined,
+	LogDeliveryWrite: undefined,
+	Private: 'private',
+	PublicRead: 'public-read',
+	PublicReadWrite: 'public-read-write',
+}
 
 module.exports = function( DynamoDB, region, stack_id, res_name, type, properties, cb ) {
 	//console.log( res_name )
@@ -67,6 +76,10 @@ module.exports = function( DynamoDB, region, stack_id, res_name, type, propertie
 					LocationConstraint: region,
 				}
 			}
+
+			if ( properties.AccessControl && AccessControls[properties.AccessControl] )
+				payload.ACL = AccessControls[properties.AccessControl]
+
 			s3.createBucket(payload, function( err ) {
 				if (err)
 					return cb({
