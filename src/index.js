@@ -325,12 +325,12 @@ async.waterfall([
 						response.statusCode = 403
 						return response.end(`
 							<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
-							  <Error>
-							    <Type>Sender</Type>
-							    <Code>NOT_IMPLEMENTED</Code>
-							    <Message>Not Implemented: ` + _POST.Action + `</Message>
-							  </Error>
-							  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+								<Error>
+									<Type>Sender</Type>
+									<Code>NOT_IMPLEMENTED</Code>
+									<Message>Not Implemented: ` + _POST.Action + `</Message>
+								</Error>
+								<RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
 							</ErrorResponse>
 						`)
 					}
@@ -344,16 +344,20 @@ async.waterfall([
 						if (err) {
 							response.statusCode = 403
 
-							response.end(`
+							var ret = `
 								<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
-								  <Error>
-								    <Type>Sender</Type>
-								    <Code>` + err.errorCode + `</Code>
-								    <Message>` + err.errorMessage + `</Message>
-								  </Error>
-								  <RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
+									Error>
+										<Type>Sender</Type>
+										<Code>` + err.errorCode + `</Code>
+										<Message>` + err.errorMessage + `</Message>
+										<RawApiPayload>` + err.RawApiPayload + `</RawApiPayload>
+										<RawApiError>` + err.RawApiError + `</RawApiError>
+									</Error>
+									<RequestId>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</RequestId>
 								</ErrorResponse>
-							`)
+							`;
+
+							response.end(ret)
 							return;
 						}
 						//response.setHeader('Content-Length', qs.stringify(data).length )
