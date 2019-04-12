@@ -7,8 +7,20 @@ module.exports = function(DynamoDB, ClientsDynamoDB, stack_id, res_name, type, p
 
 		// delete the table
 		function( cb ) {
-			ClientsDynamoDB.client.deleteTable({ TableName: properties.TableName }, function(err) {
-				cb(err)
+			var payload = { TableName: properties.TableName }
+			ClientsDynamoDB.client.deleteTable(payload, function(err) {
+				
+				if (err && err.code === 'ResourceNotFoundException')
+					return cb()
+
+				if (err)
+					return cb({
+						errorCode: err.code,
+						errorMessage: err.message,
+						RawApiPayload: JSON.stringify(payload),
+						RawApiError: JSON.stringify(err),
+					})
+				cb()
 			} )
 		},
 
