@@ -5,7 +5,7 @@ var account_id = '000000000000'
 
 
 module.exports = {
-	CreateStack: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	CreateStack: function(_POST, DynamoDB, region, cb ) {
 
 		var stack_id   = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); });
 		var template;
@@ -319,12 +319,12 @@ module.exports = {
 
 					try {
 						var respath = './Services/' + template.Resources[res_name].Type.split('::').join('/') + '/create.js';
-						require(respath)(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
+						require(respath)(DynamoDB, region, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					} catch (err) {
 						if (err && require('fs').existsSync(respath))
 							console.log(respath, "failed" )
 
-						require('./Services/default/create.js')(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
+						require('./Services/default/create.js')(DynamoDB, region,stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					}
 
 				}, function(err) {
@@ -375,7 +375,7 @@ module.exports = {
 
 
 	},
-	DeleteStack: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	DeleteStack: function(_POST, DynamoDB, region, cb ) {
 
 		var stack;
 		async.waterfall([
@@ -433,9 +433,9 @@ module.exports = {
 
 							try {
 								var respath = './Services/' + res.type.split('::').join('/') + '/delete.js';
-						 		require(respath)(DynamoDB, ClientsDynamoDB, res.stack_id,res.resource_name, res.type, res.properties, cb  )
+								require(respath)(DynamoDB, region, res.stack_id,res.resource_name, res.type, res.properties, cb  )
 							} catch (e) {
-								require('./Services/default/delete.js')(DynamoDB, ClientsDynamoDB, res.stack_id,res.resource_name, res.type, res.properties, cb )
+								require('./Services/default/delete.js')(DynamoDB, region, res.stack_id,res.resource_name, res.type, res.properties, cb )
 							}
 
 						}, function(err) {
@@ -489,7 +489,7 @@ module.exports = {
 
 		//console.log('DeleteStack', _POST)
 	},
-	ListStacks: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	ListStacks: function(_POST, DynamoDB, region, cb ) {
 
 		// CREATE_IN_PROGRESS | CREATE_FAILED | CREATE_COMPLETE | ROLLBACK_IN_PROGRESS | ROLLBACK_FAILED | ROLLBACK_COMPLETE | DELETE_IN_PROGRESS | DELETE_FAILED | DELETE_COMPLETE | UPDATE_IN_PROGRESS | UPDATE_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_COMPLETE | UPDATE_ROLLBACK_IN_PROGRESS | UPDATE_ROLLBACK_FAILED | UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS | UPDATE_ROLLBACK_COMPLETE | REVIEW_IN_PROGRESS
 
@@ -553,7 +553,7 @@ module.exports = {
 
 
 
-	GetTemplateSummary: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	GetTemplateSummary: function(_POST, DynamoDB, region, cb ) {
 
 
 		// Step1, replace pseudo parameters
@@ -677,7 +677,7 @@ module.exports = {
 
 	},
 
-	GetTemplate: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	GetTemplate: function(_POST, DynamoDB, region, cb ) {
 
 
 		var account_id = '000000000000'
@@ -749,7 +749,7 @@ module.exports = {
 
 
 
-	DescribeStacks: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	DescribeStacks: function(_POST, DynamoDB, region, cb ) {
 
 
 		var account_id = '000000000000'
@@ -847,7 +847,7 @@ module.exports = {
 	},
 
 
-	ListStackResources: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	ListStackResources: function(_POST, DynamoDB, region, cb ) {
 
 
 		var account_id = '000000000000'
@@ -928,7 +928,7 @@ module.exports = {
 
 		})
 	},
-	DescribeStackEvents: function(_POST, DynamoDB, ClientsDynamoDB, region, cb ) {
+	DescribeStackEvents: function(_POST, DynamoDB, region, cb ) {
 		return cb({errorCode: 'NOT_IMPLEMENTED'})
 	}
 

@@ -6,7 +6,7 @@ var AWS = require('aws-sdk')
 Ractive = require('ractive')
 Ractive.DEBUG = false;
 var url = require('url');
-const DynamodbFactory = require('@awspilot/dynamodb')
+DynamodbFactory = require('@awspilot/dynamodb')
 DynamodbFactory.config( {empty_string_replace_as: "\0" } );
 
 
@@ -67,14 +67,7 @@ async.waterfall([
 					})
 				)
 
-				var ClientsDynamoDB = new DynamodbFactory(
-					new AWS.DynamoDB({
-						endpoint:        process.env.DYNAMODB_ENDPOINT,
-						accessKeyId:     process.env.DYNAMODB_KEY,
-						secretAccessKey: process.env.DYNAMODB_SECRET,
-						region:          region,
-					})
-				)
+
 
 
 				async.waterfall([
@@ -335,7 +328,7 @@ async.waterfall([
 						`)
 					}
 
-					cf[_POST.Action](_POST,DynamoDB,ClientsDynamoDB, region,function(err,data) {
+					cf[_POST.Action](_POST,DynamoDB, region,function(err,data) {
 						//response.setHeader('Content-Type', 'application/x-www-form-urlencoded' )
 						response.setHeader('Content-Type', 'application/xml');
 						//response.setHeader('x-amzn-RequestId', uuid.v1())

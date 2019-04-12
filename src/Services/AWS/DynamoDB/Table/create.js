@@ -1,6 +1,16 @@
 
 
-module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, properties, cb ) {
+
+module.exports = function(DynamoDB, region, stack_id, res_name, type, properties, cb ) {
+
+	var ClientsDynamoDB = new DynamodbFactory(
+		new AWS.DynamoDB({
+			endpoint:        process.env.DYNAMODB_ENDPOINT,
+			accessKeyId:     process.env.DYNAMODB_KEY,
+			secretAccessKey: process.env.DYNAMODB_SECRET,
+			region:          region,
+		})
+	);
 
 	async.waterfall([
 
