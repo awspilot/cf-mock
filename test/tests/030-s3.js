@@ -1,8 +1,8 @@
 
 
-describe('S3', function () {
+describe('AWS::S3::Bucket', function () {
 
-	it('CreateStack with AWS::S3::Bucket', function(done) {
+	it('CreateStack', function(done) {
 
 		var params = {
 			StackName: 'STRING_VALUE',

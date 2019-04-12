@@ -2,9 +2,9 @@
 
 
 
-describe('dynamodb', function () {
+describe('AWS::DynamoDB::Table', function () {
 
-	it('!Ref TableName (no parameter value)', function(done) {
+	it('CreateStack', function(done) {
 
 		var params = {
 			StackName: 'STRING_VALUE',
@@ -52,6 +52,62 @@ Resources:
 	})
 
 	// @todo: list tables, check it it exists
+
+
+	it('CreateStack with existing table (should fail)', function(done) {
+
+		var params = {
+			StackName: 'stack2',
+			TemplateBody: `
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+    TableName:
+        Type: String
+        Default: default_table_name
+Resources:
+
+    MyTable:
+        Type: AWS::DynamoDB::Table
+        Properties:
+            TableName: !Ref TableName
+            AttributeDefinitions:
+                -
+                  AttributeName: field
+                  AttributeType: S
+
+            KeySchema:
+                -
+                  AttributeName: field
+                  KeyType: HASH
+
+            ProvisionedThroughput:
+                ReadCapacityUnits: 1
+                WriteCapacityUnits: 1
+`,
+		};
+		cloudformation.createStack(params, function(err, data) {
+			
+			if (err && (err.code === 'ResourceInUseException')) {
+				cloudformation.deleteStack({ StackName: 'stack2', }, function(err, data) {
+					done()
+				});
+				return 
+			}
+
+			if (err)
+				throw err
+
+			throw 'CreateStack with existing Bucket should have failed'
+
+		});
+	})
+
+
+
+	
+
+
+
 
 	it('DeleteStack', function(done) {
 		var params = {
@@ -120,24 +176,19 @@ Resources:
 				throw err
 
 			setTimeout(function() {
-				done()
+				var params = {
+					StackName: 'STRING_VALUE',
+				};
+				cloudformation.deleteStack(params, function(err, data) {
+					if (err)
+						throw err
+
+					done()
+				});
 			}, 3000)
 		});
 	})
 
-	// @todo: list tables, check it it exists
-
-	it('DeleteStack', function(done) {
-		var params = {
-			StackName: 'STRING_VALUE',
-		};
-		cloudformation.deleteStack(params, function(err, data) {
-			if (err)
-				throw err
-
-			done()
-		});
-	})
 
 
 
@@ -156,7 +207,8 @@ Resources:
 
 
 
-	it('', function(done) {
+
+	it('BillingMode', function(done) {
 
 		var params = {
 			StackName: 'STRING_VALUE',
@@ -186,23 +238,21 @@ Resources:
 			if (err)
 				throw err
 
+			// @todo: list tables, check it it is pay per request
+
 			setTimeout(function() {
-				done()
+				var params = {
+					StackName: 'STRING_VALUE',
+				};
+				cloudformation.deleteStack(params, function(err, data) {
+					if (err)
+						throw err
+
+					done()
+				});
 			}, 3000)
 		});
 	})
 
-	// @todo: list tables, check it it is pay per request
 
-	it('DeleteStack', function(done) {
-		var params = {
-			StackName: 'STRING_VALUE',
-		};
-		cloudformation.deleteStack(params, function(err, data) {
-			if (err)
-				throw err
-
-			done()
-		});
-	})
 })
