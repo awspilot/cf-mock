@@ -48,7 +48,7 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 				}
 			}
 
-			ClientsDynamoDB.client.createTable({
+			var payload = {
 				TableName: properties.TableName,
 				AttributeDefinitions: properties.AttributeDefinitions,
 				KeySchema: properties.KeySchema,
@@ -57,8 +57,19 @@ module.exports = function(DynamoDB, ClientsDynamoDB , stack_id, res_name, type, 
 				GlobalSecondaryIndexes: properties.GlobalSecondaryIndexes,
 				LocalSecondaryIndexes: properties.LocalSecondaryIndexes,
 				StreamSpecification: properties.StreamSpecification,
-			}, function(err) {
-				if (err) console.log(err)
+			}
+
+			ClientsDynamoDB.client.createTable(payload, function(err) {
+
+				if (err)
+					return cb({
+						errorCode: err.code,
+						errorMessage: err.message,
+						RawApiPayload: JSON.stringify(payload),
+						RawApiError: JSON.stringify(err),
+					})
+
+
 				cb(err)
 			})
 		},
