@@ -346,7 +346,7 @@ async.waterfall([
 
 							var ret = `
 								<ErrorResponse xmlns="http://cloudformation.amazonaws.com/doc/2010-05-15/">
-									Error>
+									<Error>
 										<Type>Sender</Type>
 										<Code>` + err.errorCode + `</Code>
 										<Message>` + err.errorMessage + `</Message>
