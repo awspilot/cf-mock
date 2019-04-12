@@ -57,8 +57,17 @@ module.exports = function(DynamoDB, ClientsDynamoDB ,stack_id, res_name, type, p
 
 		// create the bucket
 		function( cb ) {
-			s3.createBucket({ Bucket: properties.BucketName, }, function( err ) {
-				cb( err )
+			var payload = { Bucket: properties.BucketName, }
+			s3.createBucket(payload, function( err ) {
+				if (err)
+					return cb({
+						errorCode: err.code,
+						errorMessage: err.message,
+						RawApiPayload: JSON.stringify(payload),
+						RawApiError: JSON.stringify(err),
+					})
+
+				cb()
 			})
 		},
 
