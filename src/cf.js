@@ -137,7 +137,7 @@ module.exports = {
 				try {
 					var temp_template = yaml.safeLoad(template_to_process)
 				} catch (err) {
-					console.log(JSON.stringify(err))
+					console.log("yaml failed err=",JSON.stringify(err))
 					return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 				}
 				if ( !temp_template.hasOwnProperty('Parameters'))
@@ -256,7 +256,7 @@ module.exports = {
 					_POST.TemplateBody =_POST.TemplateBody.split(refs[0]).join('')
 				}
 
-				console.log(_POST.TemplateBody)
+				//console.log(_POST.TemplateBody)
 
 				_POST.TemplateBody = _POST.TemplateBody
 					.split('!Base64').join( ''  )
@@ -278,12 +278,15 @@ module.exports = {
 					.split('!Transform').join( ''  )
 					;
 
-				console.log(_POST.TemplateBody)
+				//console.log(_POST.TemplateBody)
 
 				try {
 					template = yaml.safeLoad( _POST.TemplateBody )
-				} catch (e) {
-					console.log("failed",_POST.TemplateBody , e )
+				} catch (err) {
+					console.log("------------------------ TEMPLATE FAILED -------------------------" )
+					console.log(_POST.TemplateBody)
+					console.log(err)
+					console.log("------------------------------------------------------------------" )
 				}
 
 				//yml = YAML.parse( _POST.TemplateBody )
@@ -317,13 +320,15 @@ module.exports = {
 					try {
 						var respath = './Services/' + template.Resources[res_name].Type.split('::').join('/') + '/create.js';
 						require(respath)(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
-					} catch (e) {
+					} catch (err) {
+						if (err)
+							console.log(respath, "failed", err )
 						require('./Services/default/create.js')(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					}
 
 				}, function(err) {
 					if (err)
-						console.log(err)
+						console.log("CreateStack failed ", err)
 					cb(err)
 				})
 			},
