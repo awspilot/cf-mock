@@ -21,7 +21,8 @@
 		"@awspilot/dynamodb": "*"
 	},
 	"devDependencies": {
-		"mocha": "5.2.0"
+		"mocha": "5.2.0",
+		"@awspilot/s3-mock": "*"
 	},
 	"author": {
 		"name": "Adrian Praja",
