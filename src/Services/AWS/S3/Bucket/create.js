@@ -21,19 +21,23 @@
 
 
 var AWS = require('aws-sdk')
-var s3  = new AWS.S3({
-	endpoint: process.env.S3_ENDPOINT || 'http://localhost/v1/s3/',
-	sslEnabled: false,
-	s3ForcePathStyle: true,
-	region: 'us-east-1',
-	credentials: {
-		accessKeyId: 'S3RVER',
-		secretAccessKey: 'S3RVER',
-	}
-})
+
 
 module.exports = function( DynamoDB, region, stack_id, res_name, type, properties, cb ) {
 	//console.log( res_name )
+
+
+	var s3  = new AWS.S3({
+		endpoint: process.env.S3_ENDPOINT || 'http://localhost/v1/s3/',
+		sslEnabled: false,
+		s3ForcePathStyle: true,
+		region: 'us-east-1',
+		credentials: {
+			accessKeyId: 'S3RVER',
+			secretAccessKey: 'S3RVER',
+		}
+	})
+
 
 	async.waterfall([
 
@@ -57,7 +61,12 @@ module.exports = function( DynamoDB, region, stack_id, res_name, type, propertie
 
 		// create the bucket
 		function( cb ) {
-			var payload = { Bucket: properties.BucketName, }
+			var payload = { 
+				Bucket: properties.BucketName, 
+				CreateBucketConfiguration: {
+					LocationConstraint: region,
+				}
+			}
 			s3.createBucket(payload, function( err ) {
 				if (err)
 					return cb({
