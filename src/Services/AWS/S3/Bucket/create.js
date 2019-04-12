@@ -22,7 +22,7 @@
 
 var AWS = require('aws-sdk')
 var s3  = new AWS.S3({
-	endpoint: 'http://localhost/v1/s3/',
+	endpoint: process.env.S3_ENDPOINT || 'http://localhost/v1/s3/',
 	sslEnabled: false,
 	s3ForcePathStyle: true,
 	region: 'us-east-1',
