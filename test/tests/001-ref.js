@@ -20,9 +20,7 @@ Resources:
     DbUsers:
         Type: Hello:World
         Properties:
-            Test1: !Ref "AWS::EC2::Subnet"
             Test2: !Ref "AWS::AccountId"
-            Test3: !Ref AWS::EC2::Subnet
             Test4: !Ref AWS::AccountId
             Test5: !GetAtt myELB.DNSName
             Test6: !Base64 xyz
