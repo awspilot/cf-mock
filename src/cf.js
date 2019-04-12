@@ -328,8 +328,6 @@ module.exports = {
 					}
 
 				}, function(err) {
-					if (err)
-						console.log("CreateStack failed ", err)
 					cb(err)
 				})
 			},
