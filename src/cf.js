@@ -321,8 +321,9 @@ module.exports = {
 						var respath = './Services/' + template.Resources[res_name].Type.split('::').join('/') + '/create.js';
 						require(respath)(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					} catch (err) {
-						if (err)
+						if (err && require('fs').existsSync(respath))
 							console.log(respath, "failed" )
+
 						require('./Services/default/create.js')(DynamoDB, ClientsDynamoDB, stack_id,res_name, template.Resources[res_name].Type, template.Resources[res_name].Properties, cb )
 					}
 
