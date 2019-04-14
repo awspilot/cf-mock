@@ -1,4 +1,5 @@
 
+var AWS = require('aws-sdk')
 
 module.exports = function(DynamoDB, region, stack_id, res_name, type, properties, cb ) {
 	//console.log( res_name )
