@@ -26,6 +26,7 @@ Resources:
         Type: AWS::DynamoDB::Table
         Properties:
             TableName: !Ref TableName
+            BillingMode: PAY_PER_REQUEST
             AttributeDefinitions:
                 -
                   AttributeName: field
@@ -45,9 +46,21 @@ Resources:
 			if (err)
 				throw err
 
+
 			setTimeout(function() {
-				done()
-			}, 3000)
+				ClientsDynamoDB.client.describeTable({ TableName: 'default_table_name'}, function(err, data ) {
+					if (err)
+						throw err;
+					
+					var t = (data.Table || {});
+					
+					if ( t.BillingModeSummary.BillingMode !== 'PAY_PER_REQUEST' )
+						throw 'BillingMode failed'
+
+					// @todo: check KeySchema, LocalSecondaryIndexes and GlobalSecondaryIndexes
+					done()
+				} )
+			}, 1000)
 		});
 	})
 

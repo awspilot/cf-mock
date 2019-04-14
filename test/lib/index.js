@@ -22,3 +22,16 @@ process.env.DYNAMODB_ENDPOINT="http://localhost:8000"
 process.env.DYNAMODB_KEY="myKeyId"
 process.env.DYNAMODB_SECRET="secretKey"
 // process.env.DYNAMODB_REGION - is taken from the cloudformation endpoint (/us-east-2)
+
+
+DynamodbFactory = require('@awspilot/dynamodb')
+DynamodbFactory.config( {empty_string_replace_as: "\0" } );
+
+ClientsDynamoDB = new DynamodbFactory(
+	new AWS.DynamoDB({
+		endpoint:        process.env.DYNAMODB_ENDPOINT,
+		accessKeyId:     process.env.DYNAMODB_KEY,
+		secretAccessKey: process.env.DYNAMODB_SECRET,
+		region:          'us-east-2',
+	})
+);
