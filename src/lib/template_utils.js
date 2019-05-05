@@ -149,6 +149,15 @@ module.exports = {
 
 		})
 		return err;
+	},
+	
+	remove_comments: function(TemplateBody) {
+		return TemplateBody
+			.split("\n")
+			.map(function(line) {
+				return line.replace(/^\s*#(.*)$/gm, "")
+			})
+			.join("\n");
 	}
 }
 

@@ -558,6 +558,10 @@ module.exports = {
 
 		// Step1, replace pseudo parameters
 		var TemplateBody = JSON.parse(JSON.stringify(_POST.TemplateBody))
+
+		// must be removed before replace_pseudo_parameters
+		TemplateBody = tpl_utils.remove_comments(TemplateBody) 
+
 		TemplateBody = tpl_utils.replace_pseudo_parameters( TemplateBody, {
 			region:region,
 			account_id: account_id,
