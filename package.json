@@ -22,6 +22,7 @@
 	},
 	"devDependencies": {
 		"mocha": "5.2.0",
+		"dynalite": "2.2.0",
 		"@awspilot/s3-mock": "*"
 	},
 	"author": {
