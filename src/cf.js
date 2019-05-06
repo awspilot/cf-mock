@@ -191,23 +191,16 @@ module.exports = {
 			function( cb ) {
 				// will parse json aswell
 
-				// !Ref "AWS::Region" | AWS::Region
-				_POST.TemplateBody = tpl_utils.replace_pseudo_parameters( _POST.TemplateBody, {
-					region:region,
-					account_id: account_id,
-					stack_name: _POST.StackName,
-					stack_id: `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
-				})
+
+				// _POST.TemplateBody = tpl_utils.replace_pseudo_parameters( _POST.TemplateBody, {
+				// 	region:region,
+				// 	account_id: account_id,
+				// 	stack_name: _POST.StackName,
+				// 	stack_id: `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
+				// })
 
 
-				// !Ref "XXX"
-				var re = /\!Ref\s+\"([a-zA-Z0-9]+)\"/gm
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join(resolve_parameter(refs[1]))
-				}
 
-				_POST.TemplateBody = tpl_utils.replace_parameters( _POST.TemplateBody, parameters)
 
 
 				var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)/g
@@ -242,11 +235,11 @@ module.exports = {
 				*/
 
 				// !Sub \n ( with parameters on the next line )
-				var re = /\!Sub\s?$/gm
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody =_POST.TemplateBody.split(refs[0]).join('')
-				}
+				// var re = /\!Sub\s?$/gm
+				// var refs = null
+				// while ( refs = re.exec(_POST.TemplateBody)) {
+				// 	_POST.TemplateBody =_POST.TemplateBody.split(refs[0]).join('')
+				// }
 
 				//console.log(_POST.TemplateBody)
 
@@ -283,6 +276,7 @@ module.exports = {
 					})
 					
 
+
 				} catch (err) {
 					console.log("------------------------ TEMPLATE FAILED -------------------------" )
 					console.log(_POST.TemplateBody)
@@ -298,8 +292,48 @@ module.exports = {
 			},
 
 
+			function(cb) {
+
+				template = tpl_utils.replace_pseudo_parameters_in_obj( template, {
+					region:region,
+					account_id: account_id,
+					stack_name: _POST.StackName,
+					stack_id: `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
+				})
+				cb()
+			},
+
+			function(cb) {
+
+				var parameters = []
+				var resources  = []
+
+				if (!template.hasOwnProperty('Resources'))
+					return cb({ errorCode: 'NoResources', errorMessage: 'Template failed to parse: No resources found' })
+
+				if ( typeof template.Resources !== "object")
+					return cb({ errorCode: 'InvalidResources', errorMessage: 'Template failed to parse: Resources is not an object' })
+
+				resources = Object.keys(template.Resources);
+
+				if (template.hasOwnProperty('Parameters') && (typeof template.Parameters === "object" )) {
+					parameters = Object.keys(template.Parameters)
+				}
+				
+				var unresolved_err = tpl_utils.find_unresolved_refs_in_obj( template.Resources, parameters );
+				if ( unresolved_err )
+					return cb(unresolved_err)
+				
+				cb()
+			},
 
 
+			// replace parameters
+			function(cb) {
+				// we already have parameters as {} with template values filled in from webform parameters
+				template = tpl_utils.replace_parameters_in_obj( template, parameters)
+				cb()
+			},
 
 			// loop resources
 			function( cb ) {
