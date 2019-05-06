@@ -103,13 +103,6 @@ module.exports = {
 
 				var template_to_process = _POST.TemplateBody
 
-				// // !Sub \n ( with parameters on the next line )
-				// var re = /\!Sub\s?$/gm
-				// var refs = null
-				// while ( refs = re.exec(template_to_process)) {
-				// 	template_to_process =template_to_process.split(refs[0]).join('')
-				// }
-
 				template_to_process = template_to_process
 					.split('!GetAtt').join('')
 					.split('!FindInMap').join( ''  )
@@ -188,19 +181,6 @@ module.exports = {
 
 
 			function( cb ) {
-				// will parse json aswell
-
-
-				// _POST.TemplateBody = tpl_utils.replace_pseudo_parameters( _POST.TemplateBody, {
-				// 	region:region,
-				// 	account_id: account_id,
-				// 	stack_name: _POST.StackName,
-				// 	stack_id: `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
-				// })
-
-
-
-
 
 				var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)/g
 				var refs = null
@@ -212,14 +192,11 @@ module.exports = {
 
 				/*
 					@todo:
-						Fn::Base64
 						Fn::FindInMap
 						Fn::GetAZs
 						Fn::If
-						Fn::Join
 						Fn::Select
 						Fn::Split
-						Fn::Sub
 
 						Fn::And
 						Fn::Equals
@@ -230,26 +207,16 @@ module.exports = {
 						Fn::ImportValue
 						Fn::Transform
 
-
 				*/
 
-				// !Sub \n ( with parameters on the next line )
-				// var re = /\!Sub\s?$/gm
-				// var refs = null
-				// while ( refs = re.exec(_POST.TemplateBody)) {
-				// 	_POST.TemplateBody =_POST.TemplateBody.split(refs[0]).join('')
-				// }
 
-				//console.log(_POST.TemplateBody)
 
 				_POST.TemplateBody = _POST.TemplateBody
 					.split('!FindInMap').join( ''  )
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
-					//.split('!Join').join( ''  )
 					.split('!Select').join( ''  )
 					.split('!Split').join( ''  )
-					//.split('!Sub').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
