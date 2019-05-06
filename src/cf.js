@@ -104,7 +104,7 @@ module.exports = {
 				var template_to_process = _POST.TemplateBody
 
 				template_to_process = template_to_process
-					.split('!GetAtt').join('')
+					//.split('!GetAtt').join('')
 					.split('!FindInMap').join( ''  )
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
@@ -119,7 +119,7 @@ module.exports = {
 					.split('!Or').join( ''  )
 
 					.split('!Cidr').join( ''  )
-					.split('!ImportValue').join( ''  )
+					//.split('!ImportValue').join( ''  )
 					.split('!Transform').join( ''  )
 					;
 
@@ -182,11 +182,11 @@ module.exports = {
 
 			function( cb ) {
 
-				var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)/g
-				var refs = null
-				while ( refs = re.exec(_POST.TemplateBody)) {
-					_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( get_att(refs[1] ,  refs[2] )  )
-				}
+				// var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)/g
+				// var refs = null
+				// while ( refs = re.exec(_POST.TemplateBody)) {
+				// 	_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( get_att(refs[1] ,  refs[2] )  )
+				// }
 
 
 
@@ -224,7 +224,7 @@ module.exports = {
 					.split('!Or').join( ''  )
 
 					.split('!Cidr').join( ''  )
-					.split('!ImportValue').join( ''  )
+					//.split('!ImportValue').join( ''  )
 					.split('!Transform').join( ''  )
 					;
 
