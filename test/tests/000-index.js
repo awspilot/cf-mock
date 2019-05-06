@@ -6,7 +6,7 @@ describe('init', function () {
 	it('waiting for cf to start', function(done) {
 		setTimeout(function() {
 			done()
-		},9000)
+		},5000)
 	})
 	it('CreateStack(yml)', function(done) {
 
