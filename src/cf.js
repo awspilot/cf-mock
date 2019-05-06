@@ -191,13 +191,6 @@ module.exports = {
 			function( cb ) {
 				// will parse json aswell
 
-				// !Ref "XXX:YYY:ZZZ"
-				// var re = /\!Ref\s+\"([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\"/gm
-				// var refs = null
-				// while ( refs = re.exec(_POST.TemplateBody)) {
-				// 	_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
-				// }
-
 				// !Ref "AWS::Region" | AWS::Region
 				_POST.TemplateBody = tpl_utils.replace_pseudo_parameters( _POST.TemplateBody, {
 					region:region,
@@ -205,16 +198,6 @@ module.exports = {
 					stack_name: _POST.StackName,
 					stack_id: `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
 				})
-
-
-
-
-				// !Ref XXX:YYY:ZZZ
-				// var re = /\!Ref\s+([A-Za-z0-9]+)::([A-Za-z0-9]+)::([A-Za-z0-9]+)\s?$/gm
-				// var refs = null
-				// while ( refs = re.exec(_POST.TemplateBody)) {
-				// 	_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( resolve_global(refs[1] + '::' + refs[2] + '::' + refs[3])  )
-				// }
 
 
 				// !Ref "XXX"
