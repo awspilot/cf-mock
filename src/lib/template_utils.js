@@ -1,6 +1,56 @@
 
+var find_unresolved_refs_in_obj = function( template_obj, parameters ) {
 
+}
 
+var replace_pseudo_parameters_in_obj = function( template_obj, parameters ) {
+	if (typeof template_obj === "number")
+		return template_obj;
+
+	if (typeof template_obj === "string")
+		return template_obj;
+
+	if (Array.isArray(template_obj)) {
+		return template_obj.map(function(el) {
+			return replace_pseudo_parameters_in_obj(el, parameters)
+		});
+	}
+
+	if (typeof template_obj === "object") {
+
+		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Ref')) {
+			if (template_obj.Ref === "AWS::Region")
+				return parameters['region'];
+
+			if (template_obj.Ref === "AWS::Partition")
+				return 'aws-local';
+
+			if (template_obj.Ref === "AWS::StackId")
+				return parameters['stack_id'];
+
+			if (template_obj.Ref === "AWS::StackName")
+				return parameters['stack_name'];
+
+			if (template_obj.Ref === "AWS::AccountId")
+				return parameters['account_id'];
+
+			if (template_obj.Ref === "AWS::NoValue")
+				return undefined;
+
+			if (template_obj.Ref === "AWS::NotificationARNs")
+				return undefined;
+
+			return template_obj; // dont touch, dont know what this is...
+		}
+		
+		Object.keys(template_obj).map(function(key) {
+			console.log('k', key )
+			template_obj[key] = replace_pseudo_parameters_in_obj(template_obj[key], parameters)
+		})
+	}
+
+	return template_obj;
+}
 
 module.exports = {
 	replace_parameters: function( TemplateBody, params ) {
@@ -125,6 +175,9 @@ module.exports = {
 		return TemplateBody;
 	},
 
+	find_unresolved_refs_in_obj: find_unresolved_refs_in_obj,
+	replace_pseudo_parameters_in_obj: replace_pseudo_parameters_in_obj,
+	
 	find_unresolved_refs: function(TemplateBody, resolved_refs ) {
 
 		var err = false;
