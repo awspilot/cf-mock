@@ -115,7 +115,7 @@ module.exports = {
 					.split('!FindInMap').join( ''  )
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
-					.split('!Join').join( ''  )
+					//.split('!Join').join( ''  )
 					.split('!Select').join( ''  )
 					.split('!Split').join( ''  )
 					.split('!Sub').join( ''  )
@@ -143,7 +143,7 @@ module.exports = {
 						},
 						json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 					})
-					//console.log( JSON.parse(temp_template, null, "\t") )
+					//console.log( JSON.stringify(temp_template, null, "\t") )
 				} catch (err) {
 					//console.log("yaml failed err=",err, temp_template)
 					return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
@@ -246,7 +246,7 @@ module.exports = {
 					.split('!FindInMap').join( ''  )
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
-					.split('!Join').join( ''  )
+					//.split('!Join').join( ''  )
 					.split('!Select').join( ''  )
 					.split('!Split').join( ''  )
 					.split('!Sub').join( ''  )
@@ -273,7 +273,7 @@ module.exports = {
 						json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 					})
 					
-					//console.log( JSON.parse(temp_template, null, "\t") )
+					//console.log( JSON.stringify(temp_template, null, "\t") )
 
 				} catch (err) {
 					console.log("------------------------ TEMPLATE FAILED -------------------------" )
@@ -337,6 +337,13 @@ module.exports = {
 				template = tpl_utils.replace_parameters_in_obj( template, parameters)
 				cb()
 			},
+
+
+			function(cb) {
+				template = tpl_utils.replace_join_in_obj( template )
+				cb()
+			},
+
 
 			// loop resources
 			function( cb ) {
