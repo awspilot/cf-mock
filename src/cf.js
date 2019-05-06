@@ -103,12 +103,12 @@ module.exports = {
 
 				var template_to_process = _POST.TemplateBody
 
-				// !Sub \n ( with parameters on the next line )
-				var re = /\!Sub\s?$/gm
-				var refs = null
-				while ( refs = re.exec(template_to_process)) {
-					template_to_process =template_to_process.split(refs[0]).join('')
-				}
+				// // !Sub \n ( with parameters on the next line )
+				// var re = /\!Sub\s?$/gm
+				// var refs = null
+				// while ( refs = re.exec(template_to_process)) {
+				// 	template_to_process =template_to_process.split(refs[0]).join('')
+				// }
 
 				template_to_process = template_to_process
 					.split('!GetAtt').join('')
@@ -118,7 +118,7 @@ module.exports = {
 					//.split('!Join').join( ''  )
 					.split('!Select').join( ''  )
 					.split('!Split').join( ''  )
-					.split('!Sub').join( ''  )
+					//.split('!Sub').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -249,7 +249,7 @@ module.exports = {
 					//.split('!Join').join( ''  )
 					.split('!Select').join( ''  )
 					.split('!Split').join( ''  )
-					.split('!Sub').join( ''  )
+					//.split('!Sub').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -272,8 +272,8 @@ module.exports = {
 						},
 						json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 					})
-					
-					//console.log( JSON.stringify(temp_template, null, "\t") )
+
+					//console.log( JSON.stringify(template, null, "\t") )
 
 				} catch (err) {
 					console.log("------------------------ TEMPLATE FAILED -------------------------" )
@@ -344,6 +344,18 @@ module.exports = {
 				cb()
 			},
 
+
+
+			function(cb) {
+				template = tpl_utils.replace_sub_in_obj( template, {
+					'AWS::Region':region,
+					'AWS::AccountId': account_id,
+					'AWS::StackName': _POST.StackName,
+					'AWS::StackId': `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
+				} )
+				//console.log("after replace sub", JSON.stringify(template, null, "\t") )
+				cb()
+			},
 
 			// loop resources
 			function( cb ) {
