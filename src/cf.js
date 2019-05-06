@@ -1,6 +1,7 @@
 //const YAML = require('yaml')
 var yaml = require('js-yaml')
 var tpl_utils = require('./lib/template_utils')
+var buildYamlSchema = require('./lib/schema')
 var account_id = '000000000000'
 
 
@@ -134,8 +135,16 @@ module.exports = {
 				//console.log(template_to_process)
 
 
+
 				try {
-					var temp_template = yaml.safeLoad(template_to_process)
+					var temp_template = yaml.safeLoad(template_to_process, {
+						//filename: path,
+						schema: buildYamlSchema(),
+						onWarning: function(warning) {
+							console.error(warning);
+						},
+						json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+					})
 				} catch (err) {
 					console.log("yaml failed err=",JSON.stringify(err))
 					return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
@@ -281,7 +290,16 @@ module.exports = {
 				//console.log(_POST.TemplateBody)
 
 				try {
-					template = yaml.safeLoad( _POST.TemplateBody )
+					template = yaml.safeLoad(_POST.TemplateBody, {
+						//filename: path,
+						schema: buildYamlSchema(),
+						onWarning: function(warning) {
+							console.error(warning);
+						},
+						json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+					})
+					
+
 				} catch (err) {
 					console.log("------------------------ TEMPLATE FAILED -------------------------" )
 					console.log(_POST.TemplateBody)
@@ -558,27 +576,31 @@ module.exports = {
 
 		// Step1, replace pseudo parameters
 		var TemplateBody = JSON.parse(JSON.stringify(_POST.TemplateBody))
+		//TemplateBody = tpl_utils.remove_comments(TemplateBody) 
 
-		// must be removed before replace_pseudo_parameters
-		TemplateBody = tpl_utils.remove_comments(TemplateBody) 
+		var template_to_process = JSON.parse(JSON.stringify(_POST.TemplateBody))
 
-		TemplateBody = tpl_utils.replace_pseudo_parameters( TemplateBody, {
-			region:region,
-			account_id: account_id,
-			stack_name: 'StackNamePlaceholder',
-			stack_id: 'StackIdPlaceholder'
-		})
 
 		// Step2, remove all Cloudformation specific func and try to validate yaml
-		template_to_process = tpl_utils.cleanup_cloudformation_specific(TemplateBody)
+		// var template_to_process = tpl_utils.cleanup_cloudformation_specific(TemplateBody)
 
-		//console.log(template_to_process)
+
+		console.log("before yaml parse, template = ", template_to_process )
 
 		try {
-			var temp_template = yaml.safeLoad(template_to_process)
+			var temp_template = yaml.safeLoad(template_to_process, {
+				//filename: path,
+				schema: buildYamlSchema(),
+				onWarning: function(warning) {
+					console.error(warning);
+				},
+				json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
+			})
+			console.log("template parsed to ", JSON.stringify(temp_template, null, "\t"))
 		} catch (err) {
 			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 		}
+
 
 		var parameters = []
 		var resources  = []
@@ -595,7 +617,14 @@ module.exports = {
 			parameters = Object.keys(temp_template.Parameters)
 		}
 
-		var unresolved_err = tpl_utils.find_unresolved_refs(TemplateBody, parameters.concat(resources ) );
+		temp_template = tpl_utils.replace_pseudo_parameters_in_obj( temp_template, {
+			region:region,
+			account_id: account_id,
+			stack_name: 'StackNamePlaceholder',
+			stack_id: 'StackIdPlaceholder'
+		})
+
+		var unresolved_err = tpl_utils.find_unresolved_refs_in_obj( temp_template.Resources, parameters );
 		if ( unresolved_err )
 			return cb(unresolved_err)
 
