@@ -302,6 +302,7 @@ module.exports = {
 			function(cb) {
 				// we already have parameters as {} with template values filled in from webform parameters
 				template = tpl_utils.replace_parameters_in_obj( template, parameters)
+				//console.log("after replace parameters", JSON.stringify(template, null, "\t") )
 				cb()
 			},
 
