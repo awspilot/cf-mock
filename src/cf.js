@@ -111,9 +111,7 @@ module.exports = {
 				}
 
 				template_to_process = template_to_process
-					.split('!Ref').join('')
 					.split('!GetAtt').join('')
-					.split('!Base64').join( ''  )
 					.split('!FindInMap').join( ''  )
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
@@ -244,7 +242,6 @@ module.exports = {
 				//console.log(_POST.TemplateBody)
 
 				_POST.TemplateBody = _POST.TemplateBody
-					.split('!Base64').join( ''  )
 					.split('!FindInMap').join( ''  )
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
@@ -291,6 +288,11 @@ module.exports = {
 				cb()
 			},
 
+
+			function(cb) {
+				template = tpl_utils.replace_base64_in_obj( template )
+				cb()
+			},
 
 			function(cb) {
 
