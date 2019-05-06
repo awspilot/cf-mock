@@ -585,7 +585,7 @@ module.exports = {
 		// var template_to_process = tpl_utils.cleanup_cloudformation_specific(TemplateBody)
 
 
-		console.log("before yaml parse, template = ", template_to_process )
+		//console.log("before yaml parse, template = ", template_to_process )
 
 		try {
 			var temp_template = yaml.safeLoad(template_to_process, {
@@ -596,7 +596,7 @@ module.exports = {
 				},
 				json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 			})
-			console.log("template parsed to ", JSON.stringify(temp_template, null, "\t"))
+			//console.log("template parsed to ", JSON.stringify(temp_template, null, "\t"))
 		} catch (err) {
 			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 		}
