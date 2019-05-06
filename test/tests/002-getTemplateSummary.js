@@ -1,6 +1,35 @@
 
 describe('all', function () {
 
+	it('getTemplateSummary - !Ref to parameter in comment', function(done) {
+		var params = {
+			TemplateBody: `
+
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+    # param1: !Ref ref_in_comment1
+    Res1:
+        Type: AWS::Mock::Res
+        Properties:
+          Region1: !Ref AWS::Region
+          # param1 !Ref ref_in_comment2
+
+
+`,
+		};
+		cloudformation.getTemplateSummary(params, function(err, data) {
+			if (err)
+				throw err
+
+			done()
+		});
+	})
+
+
+
+
+
+
 	it('getTemplateSummary - !Ref to unknown parameter', function(done) {
 		var params = {
 			TemplateBody: `
