@@ -170,12 +170,7 @@ var replace_sub_in_obj = function( template_obj, pseudo_parameters ) {
 				substring = substring.split('${' + key + '}').join(sub_obj[key])
 			})
 
-			console.log("Sub", template_obj.Sub )
-			
-			
-			
 			return substring;
-			return template_obj.Join[1].join(template_obj.Join[0]);
 		}
 
 		Object.keys(template_obj).map(function(key) {
