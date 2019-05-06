@@ -1,11 +1,11 @@
 
-var find_unresolved_refs_in_obj = function( template_obj, parameters ) {
+var find_unresolved_refs_in_obj = function( template_obj, parameters, resources ) {
 
 	if (Array.isArray(template_obj)) {
 		var err;
 		template_obj.map(function(el) {
-			if (!err) 
-				err = find_unresolved_refs_in_obj(el, parameters)
+			if (!err)
+				err = find_unresolved_refs_in_obj(el, parameters, resources )
 		});
 		return err;
 	}
@@ -14,7 +14,7 @@ var find_unresolved_refs_in_obj = function( template_obj, parameters ) {
 		
 		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Ref')) {
 			
-			if (parameters.indexOf(template_obj.Ref) === -1)
+			if ((parameters.indexOf(template_obj.Ref) === -1) &&  (resources.indexOf(template_obj.Ref) === -1) )
 				return { errorCode: 'UNRESOLVED_PARAMETER', errorMessage: 'Unresolved parameter ' + template_obj.Ref }
 			
 			return;
@@ -22,8 +22,8 @@ var find_unresolved_refs_in_obj = function( template_obj, parameters ) {
 		
 		var err;
 		Object.keys(template_obj).map(function(key) {
-			if (find_unresolved_refs_in_obj(template_obj[key], parameters ) && !err)
-				err = find_unresolved_refs_in_obj(template_obj[key], parameters)
+			if (find_unresolved_refs_in_obj(template_obj[key], parameters, resources ) && !err)
+				err = find_unresolved_refs_in_obj(template_obj[key], parameters, resources )
 
 		})
 		return err;
@@ -346,4 +346,3 @@ module.exports = {
 	// 		.join("\n");
 	// }
 }
-

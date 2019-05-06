@@ -290,7 +290,7 @@ module.exports = {
 					parameters = Object.keys(template.Parameters)
 				}
 				
-				var unresolved_err = tpl_utils.find_unresolved_refs_in_obj( template.Resources, parameters );
+				var unresolved_err = tpl_utils.find_unresolved_refs_in_obj( template.Resources, parameters, resources );
 				if ( unresolved_err )
 					return cb(unresolved_err)
 				
@@ -623,6 +623,15 @@ module.exports = {
 			parameters = Object.keys(temp_template.Parameters)
 		}
 
+		// check if Parameters overlap Resource names
+		var parameters_overlap_res_names = false;
+		parameters.map(function(pname) {
+			if (resources.indexOf(pname) !== -1)
+				parameters_overlap_res_names = pname;
+		})
+		if (parameters_overlap_res_names !== false)
+			return cb({ errorCode: 'INVALID_PARAMETER', errorMessage: 'Parameter ' + parameters_overlap_res_names + ' overlaps with resource name.' })
+
 		temp_template = tpl_utils.replace_pseudo_parameters_in_obj( temp_template, {
 			region:region,
 			account_id: account_id,
@@ -630,7 +639,7 @@ module.exports = {
 			stack_id: 'StackIdPlaceholder'
 		})
 
-		var unresolved_err = tpl_utils.find_unresolved_refs_in_obj( temp_template.Resources, parameters );
+		var unresolved_err = tpl_utils.find_unresolved_refs_in_obj( temp_template.Resources, parameters, resources );
 		if ( unresolved_err )
 			return cb(unresolved_err)
 

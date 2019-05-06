@@ -35,6 +35,12 @@ Resources:
             ProvisionedThroughput:
                 ReadCapacityUnits: !Ref "ReadCapacity"
                 WriteCapacityUnits: !Ref WriteCapacity
+
+    RefTestToAnotherResource:
+        Type: Hello:World
+        Properties:
+            k1: !Ref DbUsers
+
 `,
 		};
 		cloudformation.createStack(params, function(err, data) {
