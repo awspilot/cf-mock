@@ -145,6 +145,46 @@ var replace_join_in_obj = function( template_obj ) {
 	return template_obj;
 }
 
+var replace_sub_in_obj = function( template_obj, pseudo_parameters ) {
+
+	if (Array.isArray(template_obj)) {
+		return template_obj.map(function(el) {
+			return replace_sub_in_obj(el,pseudo_parameters)
+		});
+	}
+
+	if (typeof template_obj === "object") {
+
+		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Sub')) {
+			
+			var substring = template_obj.Sub[0];
+			var sub_obj = template_obj.Sub[1]
+			
+			Object.keys(pseudo_parameters).map(function(key) {
+				// @todo: check if space is allowed ${ space varname space } - then we need regex or eval with javascript templates
+				substring = substring.split('${' + key + '}').join(pseudo_parameters[key])
+			})
+
+			Object.keys(sub_obj).map(function(key) {
+				// @todo: check if space is allowed ${ space varname space } - then we need regex or eval with javascript templates
+				substring = substring.split('${' + key + '}').join(sub_obj[key])
+			})
+
+			console.log("Sub", template_obj.Sub )
+			
+			
+			
+			return substring;
+			return template_obj.Join[1].join(template_obj.Join[0]);
+		}
+
+		Object.keys(template_obj).map(function(key) {
+			template_obj[key] = replace_sub_in_obj(template_obj[key], pseudo_parameters)
+		})
+	}
+
+	return template_obj;
+}
 
 module.exports = {
 	// replace_parameters: function( TemplateBody, params ) {
@@ -274,6 +314,7 @@ module.exports = {
 	replace_parameters_in_obj: replace_parameters_in_obj,
 	replace_base64_in_obj: replace_base64_in_obj,
 	replace_join_in_obj: replace_join_in_obj,
+	replace_sub_in_obj: replace_sub_in_obj,
 	
 	// find_unresolved_refs: function(TemplateBody, resolved_refs ) {
 	// 
