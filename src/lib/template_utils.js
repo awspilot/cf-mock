@@ -4,11 +4,6 @@ var find_unresolved_refs_in_obj = function( template_obj, parameters ) {
 }
 
 var replace_pseudo_parameters_in_obj = function( template_obj, parameters ) {
-	if (typeof template_obj === "number")
-		return template_obj;
-
-	if (typeof template_obj === "string")
-		return template_obj;
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
