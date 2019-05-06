@@ -37,9 +37,18 @@ Resources:
                 WriteCapacityUnits: !Ref WriteCapacity
 
     RefTestToAnotherResource:
-        Type: Hello:World
+        Type: AWS::DynamoDB::Table
         Properties:
-            k1: !Ref DbUsers
+            TableName: !Join [ 'X', [ mytable, !Ref DbUsers ] ]
+            BillingMode: PAY_PER_REQUEST
+            AttributeDefinitions:
+                -
+                  AttributeName: field
+                  AttributeType: S
+            KeySchema:
+                -
+                  AttributeName: field
+                  KeyType: HASH
 
 `,
 		};
@@ -52,6 +61,7 @@ Resources:
 			}, 5000)
 		});
 	})
+	
 	it('DeleteStack', function(done) {
 		cloudformation.deleteStack({ StackName: 'STRING_VALUE', }, function(err, data) {
 			if (err)
