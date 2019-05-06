@@ -130,7 +130,7 @@ module.exports = {
 					.split('!Transform').join( ''  )
 					;
 
-				//console.log(template_to_process)
+				//console.log("try to process",template_to_process)
 
 
 
@@ -143,8 +143,9 @@ module.exports = {
 						},
 						json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 					})
+					//console.log( JSON.parse(temp_template, null, "\t") )
 				} catch (err) {
-					console.log("yaml failed err=",JSON.stringify(err))
+					//console.log("yaml failed err=",err, temp_template)
 					return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
 				}
 				if ( !temp_template.hasOwnProperty('Parameters'))
@@ -272,7 +273,7 @@ module.exports = {
 						json: false, // compatibility with JSON.parse behaviour. If true, then duplicate keys in a mapping will override values rather than throwing an error.
 					})
 					
-
+					//console.log( JSON.parse(temp_template, null, "\t") )
 
 				} catch (err) {
 					console.log("------------------------ TEMPLATE FAILED -------------------------" )
