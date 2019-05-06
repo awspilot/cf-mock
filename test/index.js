@@ -7,6 +7,7 @@ require('./tests/000-index.js')
 require('./tests/001-pseudoparameters.js')
 require('./tests/002-ref.js')
 require('./tests/003-base64.js')
+require('./tests/004-join.js')
 
 
 require('./tests/020-describestacks.js')
