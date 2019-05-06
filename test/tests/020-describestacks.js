@@ -27,7 +27,7 @@ Resources:
             Test7: !FindInMap xyz
             Test8: !GetAZs xyz
             Test9: !If xyz
-            Test10: !Join xyz
+            Test10: !Join [ xyz, [] ]
             Test11: !Select xyz
             Test12: !Sub zyz
             VolumeId:
