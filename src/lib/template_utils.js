@@ -76,6 +76,32 @@ var replace_pseudo_parameters_in_obj = function( template_obj, parameters ) {
 	return template_obj;
 }
 
+var replace_parameters_in_obj = function( template_obj, parameters ) {
+
+	if (Array.isArray(template_obj)) {
+		return template_obj.map(function(el) {
+			return replace_parameters_in_obj(el, parameters)
+		});
+	}
+
+	if (typeof template_obj === "object") {
+
+		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Ref')) {
+
+			if (parameters.hasOwnProperty( template_obj.Ref ) )
+				return parameters[template_obj.Ref]
+				
+			return '==UNHANDLED==';
+		}
+		
+		Object.keys(template_obj).map(function(key) {
+			template_obj[key] = replace_parameters_in_obj(template_obj[key], parameters)
+		})
+	}
+
+	return template_obj;
+}
+
 module.exports = {
 	replace_parameters: function( TemplateBody, params ) {
 
@@ -201,6 +227,7 @@ module.exports = {
 
 	find_unresolved_refs_in_obj: find_unresolved_refs_in_obj,
 	replace_pseudo_parameters_in_obj: replace_pseudo_parameters_in_obj,
+	replace_parameters_in_obj: replace_parameters_in_obj,
 	
 	find_unresolved_refs: function(TemplateBody, resolved_refs ) {
 
