@@ -136,7 +136,9 @@ async.waterfall([
 										return cb(err)
 									}
 
-									cb()
+									// @todo: wait for table to be active
+									setTimeout(cb,2000)
+
 								})
 								return
 							} else {
