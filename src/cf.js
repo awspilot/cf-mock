@@ -320,7 +320,7 @@ module.exports = {
 					'AWS::AccountId': account_id,
 					'AWS::StackName': _POST.StackName,
 					'AWS::StackId': `arn:aws:cloudformation:`+region+`:` + account_id + `:stack/` + _POST.StackName + `/` + stack_id
-				} )
+				}, parameters )
 				//console.log("after replace sub", JSON.stringify(template, null, "\t") )
 				cb()
 			},

@@ -145,18 +145,37 @@ var replace_join_in_obj = function( template_obj ) {
 	return template_obj;
 }
 
-var replace_sub_in_obj = function( template_obj, pseudo_parameters ) {
+var replace_sub_in_obj = function( template_obj, pseudo_parameters, parameters ) {
+
+
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
-			return replace_sub_in_obj(el,pseudo_parameters)
+			return replace_sub_in_obj(el, pseudo_parameters, parameters )
 		});
 	}
 
 	if (typeof template_obj === "object") {
 
 		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Sub')) {
-			
+
+
+			if (typeof template_obj.Sub === "string" ) {
+				var substring = template_obj.Sub;
+
+				Object.keys(pseudo_parameters).map(function(key) {
+					// @todo: check if space is allowed ${ space varname space } - then we need regex or eval with javascript templates
+					substring = substring.split('${' + key + '}').join(pseudo_parameters[key])
+				})
+
+				Object.keys(parameters).map(function(key) {
+					// @todo: check if space is allowed ${ space varname space } - then we need regex or eval with javascript templates
+					substring = substring.split('${' + key + '}').join(parameters[key])
+				})
+
+				return substring;
+			}
+
 			var substring = template_obj.Sub[0];
 			var sub_obj = template_obj.Sub[1]
 			
@@ -174,7 +193,7 @@ var replace_sub_in_obj = function( template_obj, pseudo_parameters ) {
 		}
 
 		Object.keys(template_obj).map(function(key) {
-			template_obj[key] = replace_sub_in_obj(template_obj[key], pseudo_parameters)
+			template_obj[key] = replace_sub_in_obj(template_obj[key], pseudo_parameters, parameters )
 		})
 	}
 
