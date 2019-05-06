@@ -91,7 +91,7 @@ var replace_parameters_in_obj = function( template_obj, parameters ) {
 			if (parameters.hasOwnProperty( template_obj.Ref ) )
 				return parameters[template_obj.Ref]
 				
-			return '==UNHANDLED==';
+			return '-UNHANDLED-REF-';
 		}
 		
 		Object.keys(template_obj).map(function(key) {
