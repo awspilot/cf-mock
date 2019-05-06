@@ -1,6 +1,33 @@
 
 var find_unresolved_refs_in_obj = function( template_obj, parameters ) {
 
+	if (Array.isArray(template_obj)) {
+		var err;
+		template_obj.map(function(el) {
+			if (!err) 
+				err = find_unresolved_refs_in_obj(el, parameters)
+		});
+		return err;
+	}
+	
+	if (typeof template_obj === "object") {
+		
+		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Ref')) {
+			
+			if (parameters.indexOf(template_obj.Ref) === -1)
+				return { errorCode: 'UNRESOLVED_PARAMETER', errorMessage: 'Unresolved parameter ' + template_obj.Ref }
+			
+			return;
+		}
+		
+		var err;
+		Object.keys(template_obj).map(function(key) {
+			if (find_unresolved_refs_in_obj(template_obj[key], parameters ) && !err)
+				err = find_unresolved_refs_in_obj(template_obj[key], parameters)
+
+		})
+		return err;
+	}
 }
 
 var replace_pseudo_parameters_in_obj = function( template_obj, parameters ) {
@@ -35,11 +62,13 @@ var replace_pseudo_parameters_in_obj = function( template_obj, parameters ) {
 			if (template_obj.Ref === "AWS::NotificationARNs")
 				return undefined;
 
+			if (template_obj.Ref === "AWS::URLSuffix")
+				return undefined;
+
 			return template_obj; // dont touch, dont know what this is...
 		}
 		
 		Object.keys(template_obj).map(function(key) {
-			console.log('k', key )
 			template_obj[key] = replace_pseudo_parameters_in_obj(template_obj[key], parameters)
 		})
 	}
@@ -209,10 +238,3 @@ module.exports = {
 	}
 }
 
-
-/*
- @todo:
- AWS::URLSuffix
- AWS::NoValue
- AWS::NotificationARNs
-*/
