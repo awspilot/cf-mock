@@ -64,6 +64,7 @@ function buildYamlSchema() {
 		//"Fn::Split": {"supportedFunctions": ["Fn::Base64", "Fn::FindInMap", "Fn::GetAtt", "Fn::If", "Fn::Join", "Fn::Select", "Fn::ImportValue", "Ref", "Fn::Sub"]},
 		//"Fn::Sub": { "supportedFunctions": ["Fn::Base64", "Fn::FindInMap", "Fn::GetAtt", "Fn::GetAZs", "Fn::If", "Fn::Join", "Fn::Select", "Ref"]},
 
+		"GetAZs": {},
 		"Split": {},
 		"ImportValue": {"supportedFunctions": ["Fn::Base64", "Fn::FindInMap", "Fn::If", "Fn::Join", "Fn::Select", "Fn::Split", "Fn::Sub", "Fn::Ref"]},
 		"GetAtt": {},

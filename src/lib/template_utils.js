@@ -234,6 +234,49 @@ var replace_sub_in_obj = function( template_obj, pseudo_parameters, parameters )
 	return template_obj;
 }
 
+
+var replace_getazs_in_obj = function( template_obj, region ) {
+
+	if (Array.isArray(template_obj)) {
+		return template_obj.map(function(el) {
+			return replace_getazs_in_obj(el, region)
+		});
+	}
+	
+	if (typeof template_obj === "object") {
+	
+		if (
+			(Object.keys(template_obj).length === 1) && 
+			template_obj.hasOwnProperty('GetAZs') &&
+			(typeof template_obj.GetAZs === "string")
+		) {
+			if (template_obj.GetAZs === "")
+				return [ region + 'a', region + 'b', region + 'c' ];
+			
+			return [ template_obj.GetAZs + 'a', template_obj.GetAZs + 'b', template_obj.GetAZs + 'c' ];
+
+		}
+
+		if (
+			(Object.keys(template_obj).length === 1) && 
+			template_obj.hasOwnProperty('Fn::GetAZs') &&
+			(typeof template_obj['Fn::GetAZs'] === "string")
+		) {
+			
+			return [ template_obj['Fn::GetAZs'] + 'a', template_obj['Fn::GetAZs'] + 'b', template_obj['Fn::GetAZs'] + 'c' ];
+
+		}
+
+
+		Object.keys(template_obj).map(function(key) {
+			template_obj[key] = replace_getazs_in_obj(template_obj[key], region )
+		})
+	}
+
+	return template_obj;
+}
+
+
 module.exports = {
 
 	find_unresolved_refs_in_obj: find_unresolved_refs_in_obj,
@@ -243,6 +286,7 @@ module.exports = {
 	replace_join_in_obj: replace_join_in_obj,
 	replace_split_in_obj: replace_split_in_obj,
 	replace_sub_in_obj: replace_sub_in_obj,
+	replace_getazs_in_obj: replace_getazs_in_obj,
 	
 	
 	// remove_comments: function(TemplateBody) {
