@@ -135,8 +135,8 @@ module.exports = {
 					})
 					//console.log( JSON.stringify(temp_template, null, "\t") )
 				} catch (err) {
-					//console.log("yaml failed err=",err, temp_template)
-					return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
+					console.log("yaml failed err=",err, temp_template, template_to_process )
+					return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + ( err.message || err.reason ) })
 				}
 				if ( !temp_template.hasOwnProperty('Parameters'))
 					return cb()
@@ -254,11 +254,6 @@ module.exports = {
 
 
 			function(cb) {
-				template = tpl_utils.replace_base64_in_obj( template )
-				cb()
-			},
-
-			function(cb) {
 
 				template = tpl_utils.replace_pseudo_parameters_in_obj( template, {
 					region:region,
@@ -316,11 +311,13 @@ module.exports = {
 
 			// replace in a while loop
 			function(cb) {
+				//console.log("before loop", JSON.stringify(template, null, "\t") )
+
 				for (var i = 1; i<=30; i++) {
 					template = tpl_utils.replace_join_in_obj( template )
 					template = tpl_utils.replace_split_in_obj( template )
 					template = tpl_utils.replace_getazs_in_obj( template, region )
-					
+					template = tpl_utils.replace_base64_in_obj( template )
 				}
 				
 				//console.log("after loop", JSON.stringify(template, null, "\t") )
@@ -608,7 +605,7 @@ module.exports = {
 			})
 			//console.log("template parsed to ", JSON.stringify(temp_template, null, "\t"))
 		} catch (err) {
-			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + err.reason })
+			return cb({ errorCode: err.YAMLException, errorMessage: 'Template failed to parse: ' + ( err.message || err.reason ) })
 		}
 
 
