@@ -112,8 +112,19 @@ var replace_base64_in_obj = function( template_obj ) {
 
 	if (typeof template_obj === "object") {
 
-		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Base64'))
+		if (
+			(Object.keys(template_obj).length === 1) && 
+			template_obj.hasOwnProperty('Base64') &&
+			(typeof template_obj.Base64 === 'string')
+		)
 			return Buffer.from(template_obj.Base64).toString('base64');
+
+		if (
+			(Object.keys(template_obj).length === 1) && 
+			template_obj.hasOwnProperty('Fn::Base64') &&
+			(typeof template_obj['Fn::Base64'] === 'string')
+		)
+			return Buffer.from(template_obj['Fn::Base64']).toString('base64');
 
 		Object.keys(template_obj).map(function(key) {
 			template_obj[key] = replace_base64_in_obj(template_obj[key])
