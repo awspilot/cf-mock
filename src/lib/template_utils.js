@@ -190,6 +190,49 @@ var replace_join_in_obj = function( template_obj ) {
 	return template_obj;
 }
 
+
+var replace_select_in_obj = function( template_obj ) {
+
+	if (Array.isArray(template_obj)) {
+		return template_obj.map(function(el) {
+			return replace_select_in_obj(el)
+		});
+	}
+
+	if (typeof template_obj === "object") {
+
+		if (
+			(Object.keys(template_obj).length === 1) &&
+			template_obj.hasOwnProperty('Select') &&
+			Array.isArray(template_obj.Select) &&
+			((typeof template_obj.Select[0] === "string") || (typeof template_obj.Select[0] === "number")) && 
+			Array.isArray( template_obj.Select[1] ) &&
+			(template_obj.Select[1].filter(function(val) { return typeof val !== "string" }).length === 0)  // must be array of strings
+		)
+			return template_obj.Select[1][parseInt(template_obj.Select[0])];
+
+
+		if (
+			(Object.keys(template_obj).length === 1) &&
+			template_obj.hasOwnProperty('Fn::Select') &&
+			Array.isArray(template_obj['Fn::Select']) &&
+			((typeof template_obj['Fn::Select'][0] === "string") || (typeof template_obj['Fn::Select'][0] === "number")) && 
+			Array.isArray( template_obj['Fn::Select'][1] ) &&
+			(template_obj['Fn::Select'][1].filter(function(val) { return typeof val !== "string" }).length === 0)  // must be array of strings
+		)
+			return template_obj['Fn::Select'][1][parseInt(template_obj['Fn::Select'][0])];
+
+
+
+		Object.keys(template_obj).map(function(key) {
+			template_obj[key] = replace_select_in_obj(template_obj[key])
+		})
+	}
+
+	return template_obj;
+}
+
+
 var replace_sub_in_obj = function( template_obj, pseudo_parameters, parameters ) {
 
 
@@ -295,11 +338,11 @@ module.exports = {
 	replace_parameters_in_obj: replace_parameters_in_obj,
 	replace_base64_in_obj: replace_base64_in_obj,
 	replace_join_in_obj: replace_join_in_obj,
+	replace_select_in_obj: replace_select_in_obj,
 	replace_split_in_obj: replace_split_in_obj,
 	replace_sub_in_obj: replace_sub_in_obj,
 	replace_getazs_in_obj: replace_getazs_in_obj,
-	
-	
+
 	// remove_comments: function(TemplateBody) {
 	// 	return TemplateBody
 	// 		.split("\n")

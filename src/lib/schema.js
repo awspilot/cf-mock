@@ -70,6 +70,7 @@ function buildYamlSchema() {
 		"GetAtt": {},
 		"Sub": {"supportedFunctions": ["Fn::Base64", "Fn::FindInMap", "Fn::GetAtt", "Fn::GetAZs", "Fn::If", "Fn::Join", "Fn::Select", "Ref"]},
 		"Join": {},
+		"Select": {},
 		"Base64": {},
 		"Ref": {}
 	};

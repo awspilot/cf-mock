@@ -107,7 +107,7 @@ module.exports = {
 					//.split('!GetAtt').join('')
 					.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
-					.split('!Select').join( ''  )
+					//.split('!Select').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -200,7 +200,7 @@ module.exports = {
 				_POST.TemplateBody = _POST.TemplateBody
 					.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
-					.split('!Select').join( ''  )
+					//.split('!Select').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -306,6 +306,7 @@ module.exports = {
 					template = tpl_utils.replace_split_in_obj( template )
 					template = tpl_utils.replace_getazs_in_obj( template, region )
 					template = tpl_utils.replace_base64_in_obj( template )
+					template = tpl_utils.replace_select_in_obj( template )
 				}
 				
 				//console.log("after loop", JSON.stringify(template, null, "\t") )
