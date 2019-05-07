@@ -10,6 +10,7 @@ require('./tests/003-base64.js')
 require('./tests/004-join.js')
 require('./tests/005-sub.js')
 require('./tests/006-split.js')
+require('./tests/007-getazs.js')
 
 
 require('./tests/020-describestacks.js')
