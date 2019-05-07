@@ -138,7 +138,7 @@ Resources:
 
 
 
-	it('!GetAZs ""', function(done) {
+	it('!GetAZs !Ref AWS::Region', function(done) {
 
 		var params = {
 			StackName: 'STRING_VALUE',
