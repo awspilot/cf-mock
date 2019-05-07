@@ -107,7 +107,6 @@ module.exports = {
 					//.split('!GetAtt').join('')
 					.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
-					//.split('!Select').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -182,7 +181,6 @@ module.exports = {
 					@todo:
 						Fn::FindInMap
 						Fn::If
-						Fn::Select
 
 						Fn::And
 						Fn::Equals
@@ -200,7 +198,6 @@ module.exports = {
 				_POST.TemplateBody = _POST.TemplateBody
 					.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
-					//.split('!Select').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
