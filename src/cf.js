@@ -106,7 +106,6 @@ module.exports = {
 				template_to_process = template_to_process
 					//.split('!GetAtt').join('')
 					.split('!FindInMap').join( ''  )
-					//.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
 					.split('!Select').join( ''  )
 
@@ -179,21 +178,11 @@ module.exports = {
 
 			function( cb ) {
 
-				// var re = /\!GetAtt\s+([A-Za-z0-9]+)\.([A-Za-z0-9]+)/g
-				// var refs = null
-				// while ( refs = re.exec(_POST.TemplateBody)) {
-				// 	_POST.TemplateBody = _POST.TemplateBody.split(refs[0]).join( get_att(refs[1] ,  refs[2] )  )
-				// }
-
-
-
 				/*
 					@todo:
 						Fn::FindInMap
-						Fn::GetAZs
 						Fn::If
 						Fn::Select
-						Fn::Split
 
 						Fn::And
 						Fn::Equals
@@ -210,7 +199,6 @@ module.exports = {
 
 				_POST.TemplateBody = _POST.TemplateBody
 					.split('!FindInMap').join( ''  )
-					//.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
 					.split('!Select').join( ''  )
 
