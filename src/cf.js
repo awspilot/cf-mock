@@ -108,10 +108,8 @@ module.exports = {
 					.split('!FindInMap').join( ''  )
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
-					//.split('!Join').join( ''  )
 					.split('!Select').join( ''  )
-					.split('!Split').join( ''  )
-					//.split('!Sub').join( ''  )
+					//.split('!Split').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -216,7 +214,7 @@ module.exports = {
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
 					.split('!Select').join( ''  )
-					.split('!Split').join( ''  )
+					//.split('!Split').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -306,14 +304,6 @@ module.exports = {
 				cb()
 			},
 
-
-			function(cb) {
-				template = tpl_utils.replace_join_in_obj( template )
-				cb()
-			},
-
-
-
 			function(cb) {
 				template = tpl_utils.replace_sub_in_obj( template, {
 					'AWS::Region':region,
@@ -324,6 +314,19 @@ module.exports = {
 				//console.log("after replace sub", JSON.stringify(template, null, "\t") )
 				cb()
 			},
+
+
+			// replace in a while loop
+			function(cb) {
+				for (var i = 1; i<=30; i++) {
+					template = tpl_utils.replace_join_in_obj( template )
+					template = tpl_utils.replace_split_in_obj( template )
+				}
+				
+				//console.log("after loop", JSON.stringify(template, null, "\t") )
+				cb();
+			},
+
 
 			// loop resources
 			function( cb ) {

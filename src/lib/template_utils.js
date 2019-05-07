@@ -123,6 +123,33 @@ var replace_base64_in_obj = function( template_obj ) {
 	return template_obj;
 }
 
+var replace_split_in_obj = function( template_obj ) {
+
+	if (Array.isArray(template_obj)) {
+		return template_obj.map(function(el) {
+			return replace_split_in_obj(el)
+		});
+	}
+
+	if (typeof template_obj === "object") {
+
+		if (
+			(Object.keys(template_obj).length === 1) && 
+			template_obj.hasOwnProperty('Split') &&
+			Array.isArray(template_obj.Split) &&
+			(typeof template_obj.Split[0] === "string") && 
+			(typeof template_obj.Split[1] === "string")
+		) {
+			return template_obj.Split[1].split(template_obj.Split[0]);
+		}
+
+		Object.keys(template_obj).map(function(key) {
+			template_obj[key] = replace_split_in_obj(template_obj[key])
+		})
+	}
+
+	return template_obj;
+}
 
 var replace_join_in_obj = function( template_obj ) {
 
@@ -134,7 +161,14 @@ var replace_join_in_obj = function( template_obj ) {
 
 	if (typeof template_obj === "object") {
 
-		if ((Object.keys(template_obj).length === 1) && template_obj.hasOwnProperty('Join'))
+		if (
+			(Object.keys(template_obj).length === 1) &&
+			template_obj.hasOwnProperty('Join') &&
+			Array.isArray(template_obj.Join) &&
+			(typeof template_obj.Join[0] === "string") && 
+			Array.isArray( template_obj.Join[1] ) &&
+			(template_obj.Join[1].filter(function(val) { return typeof val !== "string" }).length === 0)  // must be array of strings
+		)
 			return template_obj.Join[1].join(template_obj.Join[0]);
 
 		Object.keys(template_obj).map(function(key) {
@@ -328,6 +362,7 @@ module.exports = {
 	replace_parameters_in_obj: replace_parameters_in_obj,
 	replace_base64_in_obj: replace_base64_in_obj,
 	replace_join_in_obj: replace_join_in_obj,
+	replace_split_in_obj: replace_split_in_obj,
 	replace_sub_in_obj: replace_sub_in_obj,
 	
 	// find_unresolved_refs: function(TemplateBody, resolved_refs ) {
