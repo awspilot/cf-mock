@@ -109,7 +109,6 @@ module.exports = {
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
 					.split('!Select').join( ''  )
-					//.split('!Split').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -214,7 +213,6 @@ module.exports = {
 					.split('!GetAZs').join( ''  )
 					.split('!If').join( ''  )
 					.split('!Select').join( ''  )
-					//.split('!Split').join( ''  )
 
 					.split('!And').join( ''  )
 					.split('!Equals').join( ''  )
@@ -592,7 +590,7 @@ module.exports = {
 
 
 		// Step2, remove all Cloudformation specific func and try to validate yaml
-		// var template_to_process = tpl_utils.cleanup_cloudformation_specific(TemplateBody)
+
 
 
 		//console.log("before yaml parse, template = ", template_to_process )
