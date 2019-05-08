@@ -24,4 +24,5 @@ require('./tests/022-liststackresources.js')
 require('./tests/200-dynamodb.js')
 require('./tests/300-s3.js')
 
+//require('./tests/400-iam.js')
 
