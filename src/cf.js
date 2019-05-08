@@ -105,7 +105,7 @@ module.exports = {
 
 				template_to_process = template_to_process
 					//.split('!GetAtt').join('')
-					.split('!FindInMap').join( ''  )
+					//.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
 
 					.split('!And').join( ''  )
@@ -196,7 +196,7 @@ module.exports = {
 
 
 				_POST.TemplateBody = _POST.TemplateBody
-					.split('!FindInMap').join( ''  )
+					//.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
 
 					.split('!And').join( ''  )
@@ -304,6 +304,7 @@ module.exports = {
 					template = tpl_utils.replace_getazs_in_obj( template, region )
 					template = tpl_utils.replace_base64_in_obj( template )
 					template = tpl_utils.replace_select_in_obj( template )
+					template = tpl_utils.replace_findinmap_in_obj( template, template.Mappings || {})
 				}
 				
 				//console.log("after loop", JSON.stringify(template, null, "\t") )

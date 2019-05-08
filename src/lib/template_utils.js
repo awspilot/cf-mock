@@ -233,6 +233,61 @@ var replace_select_in_obj = function( template_obj ) {
 }
 
 
+
+var replace_findinmap_in_obj = function( template_obj, maps ) {
+
+	if (Array.isArray(template_obj)) {
+		return template_obj.map(function(el) {
+			return replace_findinmap_in_obj( el, maps )
+		});
+	}
+
+	if (typeof template_obj === "object") {
+
+		if (
+			(Object.keys(template_obj).length === 1) &&
+			template_obj.hasOwnProperty('FindInMap') &&
+			Array.isArray(template_obj.FindInMap) &&
+			(template_obj.FindInMap.filter(function(val) { return (typeof val !== "string") && (typeof val !== "number") }).length === 0)  // must be array of strings
+		) {
+			// depends on length
+			if (template_obj.FindInMap.length === 2)
+				return ((maps || {})[template_obj.FindInMap[0]] || {})[template_obj.FindInMap[1]] || 'undefined';
+
+			if (template_obj.FindInMap.length === 3)
+				return (((maps || {})[template_obj.FindInMap[0]] || {})[template_obj.FindInMap[1]] || {})[template_obj.FindInMap[2]] || 'undefined';
+
+
+			return 'undefined';
+		}
+
+		if (
+			(Object.keys(template_obj).length === 1) &&
+			template_obj.hasOwnProperty('Fn::FindInMap') &&
+			Array.isArray(template_obj['Fn::FindInMap']) &&
+			(template_obj['Fn::FindInMap'].filter(function(val) { return (typeof val !== "string") && (typeof val !== "number") }).length === 0)  // must be array of strings
+		) {
+			// depends on length
+			if (template_obj['Fn::FindInMap'].length === 2)
+				return ((maps || {})[template_obj['Fn::FindInMap'][0]] || {})[template_obj['Fn::FindInMap'][1]] || 'undefined';
+
+			if (template_obj['Fn::FindInMap'].length === 3)
+				return (((maps || {})[template_obj['Fn::FindInMap'][0]] || {})[template_obj['Fn::FindInMap'][1]] || {})[template_obj['Fn::FindInMap'][2]] || 'undefined';
+
+
+			return 'undefined';
+		}
+
+
+
+		Object.keys(template_obj).map(function(key) {
+			template_obj[key] = replace_findinmap_in_obj(template_obj[key], maps )
+		})
+	}
+
+	return template_obj;
+}
+
 var replace_sub_in_obj = function( template_obj, pseudo_parameters, parameters ) {
 
 
@@ -339,6 +394,7 @@ module.exports = {
 	replace_base64_in_obj: replace_base64_in_obj,
 	replace_join_in_obj: replace_join_in_obj,
 	replace_select_in_obj: replace_select_in_obj,
+	replace_findinmap_in_obj: replace_findinmap_in_obj,
 	replace_split_in_obj: replace_split_in_obj,
 	replace_sub_in_obj: replace_sub_in_obj,
 	replace_getazs_in_obj: replace_getazs_in_obj,
