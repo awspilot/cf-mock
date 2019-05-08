@@ -35,3 +35,11 @@ ClientsDynamoDB = new DynamodbFactory(
 		region:          'us-east-2',
 	})
 );
+
+// connection to IAM, 
+process.env.CF_IAM_ENDPOINT="http://localhost:10006"
+process.env.IAM_KEY="myKeyId"
+process.env.IAM_SECRET="secretKey"
+
+
+
