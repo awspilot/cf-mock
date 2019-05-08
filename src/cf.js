@@ -105,7 +105,6 @@ module.exports = {
 
 				template_to_process = template_to_process
 					//.split('!GetAtt').join('')
-					//.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
 
 					.split('!And').join( ''  )
@@ -179,7 +178,6 @@ module.exports = {
 
 				/*
 					@todo:
-						Fn::FindInMap
 						Fn::If
 
 						Fn::And
@@ -196,7 +194,6 @@ module.exports = {
 
 
 				_POST.TemplateBody = _POST.TemplateBody
-					//.split('!FindInMap').join( ''  )
 					.split('!If').join( ''  )
 
 					.split('!And').join( ''  )
