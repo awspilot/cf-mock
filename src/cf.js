@@ -111,7 +111,7 @@ module.exports = {
 					//.split('!Not').join( ''  )
 					//.split('!Or').join( ''  )
 
-					.split('!Cidr').join( ''  )
+					//.split('!Cidr').join( ''  )
 					//.split('!ImportValue').join( ''  )
 					.split('!Transform').join( ''  )
 					;
@@ -199,7 +199,7 @@ module.exports = {
 					//.split('!Not').join( ''  )
 					//.split('!Or').join( ''  )
 
-					.split('!Cidr').join( ''  )
+					//.split('!Cidr').join( ''  )
 					//.split('!ImportValue').join( ''  )
 					.split('!Transform').join( ''  )
 					;

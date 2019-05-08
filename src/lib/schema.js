@@ -64,6 +64,8 @@ function buildYamlSchema() {
 		"Or": {},
 		"And": {},
 
+		"Cidr": {},
+		
 		"FindInMap": {},
 		"GetAZs": {},
 		"Split": {},
