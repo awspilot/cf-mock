@@ -103,23 +103,6 @@ module.exports = {
 
 				var template_to_process = _POST.TemplateBody
 
-				template_to_process = template_to_process
-					//.split('!GetAtt').join('')
-					//.split('!If').join( ''  )
-					//.split('!And').join( ''  )
-					//.split('!Equals').join( ''  )
-					//.split('!Not').join( ''  )
-					//.split('!Or').join( ''  )
-
-					//.split('!Cidr').join( ''  )
-					//.split('!ImportValue').join( ''  )
-					//.split('!Transform').join( ''  )
-					;
-
-				//console.log("try to process",template_to_process)
-
-
-
 				try {
 					var temp_template = yaml.safeLoad(template_to_process, {
 						//filename: path,
@@ -174,37 +157,6 @@ module.exports = {
 
 
 			function( cb ) {
-
-				/*
-					@todo:
-						Fn::If
-
-						Fn::And
-						Fn::Equals
-						Fn::Not
-						Fn::Or
-
-						Fn::Cidr
-						Fn::ImportValue
-						Fn::Transform
-
-				*/
-
-
-
-				_POST.TemplateBody = _POST.TemplateBody
-					//.split('!If').join( ''  )
-					//.split('!And').join( ''  )
-					//.split('!Equals').join( ''  )
-					//.split('!Not').join( ''  )
-					//.split('!Or').join( ''  )
-
-					//.split('!Cidr').join( ''  )
-					//.split('!ImportValue').join( ''  )
-					//.split('!Transform').join( ''  )
-					;
-
-				//console.log(_POST.TemplateBody)
 
 				try {
 					template = yaml.safeLoad(_POST.TemplateBody, {
@@ -302,7 +254,7 @@ module.exports = {
 					template = tpl_utils.replace_findinmap_in_obj( template, template.Mappings || {})
 				}
 				
-				console.log("after loop", JSON.stringify(template, null, "\t") )
+				//console.log("after loop", JSON.stringify(template, null, "\t") )
 				cb();
 			},
 
