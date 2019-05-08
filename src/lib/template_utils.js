@@ -390,22 +390,35 @@ var replace_getazs_in_obj = function( template_obj, region ) {
 			if (template_obj.GetAZs === "")
 				return [ region + 'a', region + 'b', region + 'c' ];
 
-			if (template_obj.GetAZs === null)
-				return [ region + 'a', region + 'b', region + 'c' ];
-
 			return [ template_obj.GetAZs + 'a', template_obj.GetAZs + 'b', template_obj.GetAZs + 'c' ];
-
 		}
+		if (
+			(Object.keys(template_obj).length === 1) && 
+			template_obj.hasOwnProperty('GetAZs') &&
+			(template_obj.GetAZs === null)
+		)
+			return [ region + 'a', region + 'b', region + 'c' ];
+
+
 
 		if (
 			(Object.keys(template_obj).length === 1) && 
 			template_obj.hasOwnProperty('Fn::GetAZs') &&
 			(typeof template_obj['Fn::GetAZs'] === "string")
 		) {
-			
-			return [ template_obj['Fn::GetAZs'] + 'a', template_obj['Fn::GetAZs'] + 'b', template_obj['Fn::GetAZs'] + 'c' ];
+			if (template_obj['Fn::GetAZs'] === "")
+				return [ region + 'a', region + 'b', region + 'c' ];
 
+			return [ template_obj['Fn::GetAZs'] + 'a', template_obj['Fn::GetAZs'] + 'b', template_obj['Fn::GetAZs'] + 'c' ];
 		}
+
+		if (
+			(Object.keys(template_obj).length === 1) && 
+			template_obj.hasOwnProperty('Fn::GetAZs') &&
+			(template_obj['Fn::GetAZs'] === null )
+		)
+			return [ region + 'a', region + 'b', region + 'c' ];
+
 
 
 		Object.keys(template_obj).map(function(key) {
