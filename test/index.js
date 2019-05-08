@@ -14,6 +14,8 @@ require('./tests/007-getazs.js')
 require('./tests/008-select.js')
 require('./tests/009-findinmap.js')
 
+require('./tests/00A-equals.js')
+
 
 require('./tests/020-describestacks.js')
 require('./tests/021-getTemplateSummary.js')
