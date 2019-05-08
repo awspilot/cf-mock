@@ -105,12 +105,11 @@ module.exports = {
 
 				template_to_process = template_to_process
 					//.split('!GetAtt').join('')
-					.split('!If').join( ''  )
-
-					.split('!And').join( ''  )
-					.split('!Equals').join( ''  )
-					.split('!Not').join( ''  )
-					.split('!Or').join( ''  )
+					//.split('!If').join( ''  )
+					//.split('!And').join( ''  )
+					//.split('!Equals').join( ''  )
+					//.split('!Not').join( ''  )
+					//.split('!Or').join( ''  )
 
 					.split('!Cidr').join( ''  )
 					//.split('!ImportValue').join( ''  )
@@ -194,12 +193,11 @@ module.exports = {
 
 
 				_POST.TemplateBody = _POST.TemplateBody
-					.split('!If').join( ''  )
-
-					.split('!And').join( ''  )
-					.split('!Equals').join( ''  )
-					.split('!Not').join( ''  )
-					.split('!Or').join( ''  )
+					//.split('!If').join( ''  )
+					//.split('!And').join( ''  )
+					//.split('!Equals').join( ''  )
+					//.split('!Not').join( ''  )
+					//.split('!Or').join( ''  )
 
 					.split('!Cidr').join( ''  )
 					//.split('!ImportValue').join( ''  )
@@ -304,7 +302,7 @@ module.exports = {
 					template = tpl_utils.replace_findinmap_in_obj( template, template.Mappings || {})
 				}
 				
-				//console.log("after loop", JSON.stringify(template, null, "\t") )
+				console.log("after loop", JSON.stringify(template, null, "\t") )
 				cb();
 			},
 
