@@ -113,7 +113,7 @@ module.exports = {
 
 					//.split('!Cidr').join( ''  )
 					//.split('!ImportValue').join( ''  )
-					.split('!Transform').join( ''  )
+					//.split('!Transform').join( ''  )
 					;
 
 				//console.log("try to process",template_to_process)
@@ -201,7 +201,7 @@ module.exports = {
 
 					//.split('!Cidr').join( ''  )
 					//.split('!ImportValue').join( ''  )
-					.split('!Transform').join( ''  )
+					//.split('!Transform').join( ''  )
 					;
 
 				//console.log(_POST.TemplateBody)
