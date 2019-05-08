@@ -1,6 +1,9 @@
 
 var find_unresolved_refs_in_obj = function( template_obj, parameters, resources ) {
 
+	if ( template_obj === null )
+		return template_obj;
+
 	if (Array.isArray(template_obj)) {
 		var err;
 		template_obj.map(function(el) {
@@ -31,6 +34,9 @@ var find_unresolved_refs_in_obj = function( template_obj, parameters, resources 
 }
 
 var replace_pseudo_parameters_in_obj = function( template_obj, parameters ) {
+
+	if ( template_obj === null )
+		return template_obj;
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
@@ -78,6 +84,9 @@ var replace_pseudo_parameters_in_obj = function( template_obj, parameters ) {
 
 var replace_parameters_in_obj = function( template_obj, parameters ) {
 
+	if ( template_obj === null )
+		return template_obj;
+
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
 			return replace_parameters_in_obj(el, parameters)
@@ -103,6 +112,9 @@ var replace_parameters_in_obj = function( template_obj, parameters ) {
 }
 
 var replace_base64_in_obj = function( template_obj ) {
+
+	if ( template_obj === null )
+		return template_obj;
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
@@ -136,6 +148,9 @@ var replace_base64_in_obj = function( template_obj ) {
 
 var replace_split_in_obj = function( template_obj ) {
 
+	if ( template_obj === null )
+		return template_obj;
+
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
 			return replace_split_in_obj(el)
@@ -163,6 +178,9 @@ var replace_split_in_obj = function( template_obj ) {
 }
 
 var replace_join_in_obj = function( template_obj ) {
+
+	if ( template_obj === null )
+		return template_obj;
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
@@ -192,6 +210,9 @@ var replace_join_in_obj = function( template_obj ) {
 
 
 var replace_select_in_obj = function( template_obj ) {
+
+	if ( template_obj === null )
+		return template_obj;
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
@@ -235,6 +256,9 @@ var replace_select_in_obj = function( template_obj ) {
 
 
 var replace_findinmap_in_obj = function( template_obj, maps ) {
+
+	if ( template_obj === null )
+		return template_obj;
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
@@ -290,7 +314,8 @@ var replace_findinmap_in_obj = function( template_obj, maps ) {
 
 var replace_sub_in_obj = function( template_obj, pseudo_parameters, parameters ) {
 
-
+	if ( template_obj === null )
+		return template_obj;
 
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
@@ -346,6 +371,9 @@ var replace_sub_in_obj = function( template_obj, pseudo_parameters, parameters )
 
 var replace_getazs_in_obj = function( template_obj, region ) {
 
+	if ( template_obj === null )
+		return template_obj;
+
 	if (Array.isArray(template_obj)) {
 		return template_obj.map(function(el) {
 			return replace_getazs_in_obj(el, region)
@@ -361,7 +389,10 @@ var replace_getazs_in_obj = function( template_obj, region ) {
 		) {
 			if (template_obj.GetAZs === "")
 				return [ region + 'a', region + 'b', region + 'c' ];
-			
+
+			if (template_obj.GetAZs === null)
+				return [ region + 'a', region + 'b', region + 'c' ];
+
 			return [ template_obj.GetAZs + 'a', template_obj.GetAZs + 'b', template_obj.GetAZs + 'c' ];
 
 		}
