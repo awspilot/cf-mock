@@ -54,9 +54,18 @@ async.waterfall([
 			request.on('end', function() {
 
 				var _POST = qs.parse(body)
-				//var region = request.url.slice(1)
-				var region = (url.parse(request.url, true).query || {}).region || 'us-east-1'
+				var region = (url.parse(request.url, true).query || {}).region
+				//console.log("region from url=", region )
 
+				// use region from signature
+				if (!region) {
+					var auth_re = /(?<algorithm>[A-Z0-9\-]+)\ Credential=(?<accesskey>[^\/]+)\/(?<unknown1>[^\/]+)\/(?<region>[^\/]+)\/([^\/]+)\/([^,]+), SignedHeaders=(?<signed_headers>[^,]+), Signature=(?<signature>[a-z0-9]+)/
+					var auth = (request.headers['authorization'] || '') .match( auth_re );
+					if (  auth === null )
+						return response.end('Failed auth');
+
+					region = auth.groups.region
+				}
 
 				var DynamoDB = new DynamodbFactory(
 					new AWS.DynamoDB({
