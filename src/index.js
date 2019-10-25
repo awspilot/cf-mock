@@ -59,12 +59,16 @@ async.waterfall([
 
 				// use region from signature
 				if (!region) {
-					var auth_re = /(?<algorithm>[A-Z0-9\-]+)\ Credential=(?<accesskey>[^\/]+)\/(?<unknown1>[^\/]+)\/(?<region>[^\/]+)\/([^\/]+)\/([^,]+), SignedHeaders=(?<signed_headers>[^,]+), Signature=(?<signature>[a-z0-9]+)/
-					var auth = (request.headers['authorization'] || '') .match( auth_re );
-					if (  auth === null )
-						return response.end('Failed auth');
+					try {
+						var auth_re = /(?<algorithm>[A-Z0-9\-]+)\ Credential=(?<accesskey>[^\/]+)\/(?<unknown1>[^\/]+)\/(?<region>[^\/]+)\/([^\/]+)\/([^,]+), SignedHeaders=(?<signed_headers>[^,]+), Signature=(?<signature>[a-z0-9]+)/
+						var auth = (request.headers['authorization'] || '') .match( auth_re );
+						if (  auth === null )
+							return response.end('Failed auth');
 
-					region = auth.groups.region
+						region = auth.groups.region
+					} catch (e) {
+						region = 'us-east-1';
+					}
 				}
 
 				var DynamoDB = new DynamodbFactory(
