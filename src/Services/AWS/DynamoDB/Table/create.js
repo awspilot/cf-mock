@@ -66,8 +66,11 @@ module.exports = function(DynamoDB, region, stack_id, res_name, type, properties
 				ProvisionedThroughput: properties.ProvisionedThroughput,
 				GlobalSecondaryIndexes: properties.GlobalSecondaryIndexes,
 				LocalSecondaryIndexes: properties.LocalSecondaryIndexes,
-				StreamSpecification: properties.StreamSpecification,
 			}
+
+			if (properties.hasOwnProperty('StreamSpecification'))
+				payload.StreamSpecification = properties.StreamSpecification
+
 
 			ClientsDynamoDB.client.createTable(payload, function(err) {
 
