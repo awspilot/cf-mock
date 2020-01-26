@@ -52,7 +52,7 @@ module.exports = function(DynamoDB, region, stack_id, res_name, type, properties
 					if (properties.StreamSpecification.hasOwnProperty('StreamViewType')) {
 						properties.StreamSpecification = {
 							StreamEnabled: true,
-							StreamViewType: roperties.StreamSpecification.StreamViewType,
+							StreamViewType: properties.StreamSpecification.StreamViewType,
 						}
 					}
 
