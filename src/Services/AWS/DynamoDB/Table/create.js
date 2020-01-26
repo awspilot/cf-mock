@@ -47,15 +47,15 @@ module.exports = function(DynamoDB, region, stack_id, res_name, type, properties
 					})
 			}
 
-			if (properties.hasOwnProperty('StreamSpecification')) {
-				if (typeof properties.StreamSpecification === "object") {
-					if (typeof properties.StreamSpecification.StreamEnabled === "string") {
-						properties.StreamSpecification.StreamEnabled = properties.StreamSpecification.StreamEnabled.toLowerCase() === "true" ? true : false
-					} else {
-						if (properties.StreamSpecification.hasOwnProperty('StreamViewType'))
-							properties.StreamSpecification.StreamEnabled = true
+			if (properties.hasOwnProperty('StreamSpecification') && (typeof properties.StreamSpecification === "object")) {
+
+					if (properties.StreamSpecification.hasOwnProperty('StreamViewType')) {
+						properties.StreamSpecification = {
+							StreamEnabled: true,
+							StreamViewType: roperties.StreamSpecification.StreamViewType,
+						}
 					}
-				}
+
 			}
 
 			var payload = {
