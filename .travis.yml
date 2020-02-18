@@ -17,7 +17,11 @@ env:
     - AWS_ACCESS_KEY_ID=fakeMyKeyId
     - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
     - AWS_REGION=us-east-1
+
+    # tell cf-mock where to find S3
     - S3_ENDPOINT=http://localhost:10003
+
+    # tell s3-mock where to store its files
     - S3_STORAGE_PATH=/tmp
 
 
