@@ -1,5 +1,7 @@
 # cf-mock
 
+[![Build Status](https://travis-ci.org/awspilot/s3-mock.svg?branch=master)](https://travis-ci.org/awspilot/s3-mock)
+
 Not much value in here, just a subproject of @awspilot/dynamodb-ui
 
 It's main purpose is to expose a minimal api that mimic the AWS Cloudformation functionality
