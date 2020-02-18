@@ -1,6 +1,6 @@
 # cf-mock
 
-[![Build Status](https://travis-ci.org/awspilot/s3-mock.svg?branch=master)](https://travis-ci.org/awspilot/s3-mock)
+[![Build Status](https://travis-ci.org/awspilot/cf-mock.svg?branch=master)](https://travis-ci.org/awspilot/cf-mock)
 
 Not much value in here, just a subproject of @awspilot/dynamodb-ui
 
