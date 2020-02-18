@@ -7,9 +7,8 @@ node_js:
 #    - "6.10"
 #    - "7"
 #    - "8.10"
-
-#    s3rver only works in 9+ 
-    - "9"
+#    - "9"
+    # s3-mock needs nodejs 10 for {recursive} fs
     - "10"
 
 env:
@@ -18,7 +17,8 @@ env:
     - AWS_ACCESS_KEY_ID=fakeMyKeyId
     - AWS_SECRET_ACCESS_KEY=fakeSecretAccessKey
     - AWS_REGION=us-east-1
-    - S3_ENDPOINT=http://localhost:3000
+    - S3_ENDPOINT=http://localhost:10003
+    - S3_STORAGE_PATH=/tmp
 
 
 before_script:
@@ -26,7 +26,7 @@ before_script:
   - tar -xzf /tmp/dynamodb_local_latest.tar.gz -C /tmp
   - java -Djava.library.path=/tmp/DynamoDBLocal_lib -jar /tmp/DynamoDBLocal.jar -inMemory &
   - sleep 2
-  - s3rver -p 3000 -a 0.0.0.0 -d /tmp &
+  - s3-mock &
   - sleep 5
 
 addons:
