@@ -4,13 +4,13 @@ var AWS = require('aws-sdk')
 module.exports = function(DynamoDB, region, stack_id, res_name, type, properties, cb ) {
 	//console.log( res_name )
 	var s3  = new AWS.S3({
-		endpoint: process.env.S3_ENDPOINT || 'http://localhost/v1/s3/',
+		endpoint: process.env.S3_ENDPOINT || 'http://localhost/v1/s3',
 		sslEnabled: false,
 		s3ForcePathStyle: true,
-		region: 'us-east-1',
+		region: region,
 		credentials: {
-			accessKeyId: 'S3RVER',
-			secretAccessKey: 'S3RVER',
+			accessKeyId: 'myKeyId',
+			secretAccessKey: 'secret',
 		}
 	})
 
@@ -46,4 +46,3 @@ module.exports = function(DynamoDB, region, stack_id, res_name, type, properties
 	})
 
 }
-
