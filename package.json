@@ -22,7 +22,7 @@
 	},
 	"devDependencies": {
 		"mocha": "5.2.0",
-		"@awspilot/s3-mock": "*"
+		"@awspilot/s3-mock": "0.0.2"
 	},
 	"author": {
 		"name": "Adrian Praja",
